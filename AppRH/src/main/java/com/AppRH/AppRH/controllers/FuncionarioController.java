@@ -16,7 +16,7 @@ import com.AppRH.AppRH.models.Dependente;
 import com.AppRH.AppRH.models.Funcionario;
 import com.AppRH.AppRH.repository.DependenteRepository;
 import com.AppRH.AppRH.repository.FuncionarioRepository;
-
+ 
 @Controller
 public class FuncionarioController {
 

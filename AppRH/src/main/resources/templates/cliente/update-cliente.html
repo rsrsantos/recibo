@@ -71,7 +71,8 @@
 
 			<div class="form-group">
 				<label for=""><b>Nome:</b> </label> <input type="text" class="form-control" value=""
-					placeholder="Insira o nome do cliente" name="nome" required>
+					placeholder="Insira o nome do cliente" name="nome" required
+					th:attr="value = ${cliente.nome}">
 				<small class="form-text text-muted"><i>* Nome completo.</i></small>
 			</div>
 
@@ -80,16 +81,17 @@
 
 					<div class="form-group">
 						<label for=""><b>Telefone:</b></label> <input type="text" value="" name="telefone"
-							class="form-control" required placeholder="(99)99999-9999" />
+							class="form-control" required placeholder="(99)99999-9999" 
+							th:attr="value = ${cliente.telefone}"/>
 					</div>
 				</div>
 				<div class="col">
 					<label for=""><b>CPF:</b> </label> <input type="text" value="" name="cpf" class="form-control"
-						placeholder="000.000.000-00" required />
+						placeholder="000.000.000-00" required th:attr="value = ${cliente.cpf}"/>
 				</div>
 
 			</div>
-			<button type="submit" class="btn btn-success">Adicionar
+			<button type="submit" class="btn btn-success">Atualizar
 				Cliente</button>
 	</div>
 

@@ -56,14 +56,14 @@
 
 		<nav class="navbar navbar-light bg-light">
 			<div class="flexbox-container">
-				<a class="navbar-brand">Cadastro de Clientes
+				<a class="navbar-brand">Atualizar Produto
 				</a>
 
 			</div>
 
 		</nav>
-		<br>
 
+		<br>
 
 		<th:block th:include="mensagem-validacao"></th:block>
 
@@ -71,7 +71,7 @@
 
 			<div class="form-group">
 				<label for=""><b>Nome:</b> </label> <input type="text" class="form-control" value=""
-					placeholder="Insira o nome do cliente" name="nome" required>
+					placeholder="Insira o nome do produto" name="nome" th:attr="value = ${produto.nome}" required>
 				<small class="form-text text-muted"><i>* Nome completo.</i></small>
 			</div>
 
@@ -79,18 +79,16 @@
 				<div class="col">
 
 					<div class="form-group">
-						<label for=""><b>Telefone:</b></label> <input type="text" value="" name="telefone"
-							class="form-control" required placeholder="(99)99999-9999" />
+						<label for=""><b>Valor:</b></label> <input type="number" pattern="^\d+(\.|\,)\d{2}$" value=""
+							name="valor" th:attr="value = ${produto.valor}" class="form-control" required /> <small
+							class="form-text text-muted"><i>* Utilize valores
+								considerando vírgula e ponto.</i></small>
 					</div>
-				</div>
-				<div class="col">
-					<label for=""><b>CPF:</b> </label> <input type="text" value="" name="cpf" class="form-control"
-						placeholder="000.000.000-00" required />
 				</div>
 
 			</div>
-			<button type="submit" class="btn btn-success">Adicionar
-				Cliente</button>
+			<button type="submit" class="btn btn-success">Atualizar
+				Produto</button>
 	</div>
 
 	<br>

@@ -40,4 +40,7 @@ public class Recibo {
 	@CreationTimestamp
 	@DateTimeFormat(pattern="dd-MMM-YYYY")
 	Date dataInclusao;
+	
+	
+	
 }

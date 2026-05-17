@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Dashboard</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Visão geral', 'Dashboard')}"></th:block>
+
+		<div class="row row-cards">
+			<div class="col-sm-6 col-lg-3">
+				<div class="card card-sm">
+					<div class="card-body">
+						<div class="subheader">Clientes</div>
+						<div class="h1 mb-0" th:text="${totalClientes}">0</div>
+						<a th:href="@{/clientes}" class="small text-secondary">Ver todos</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-lg-3">
+				<div class="card card-sm">
+					<div class="card-body">
+						<div class="subheader">Produtos</div>
+						<div class="h1 mb-0" th:text="${totalProdutos}">0</div>
+						<a th:href="@{/produtos}" class="small text-secondary">Ver todos</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-lg-3">
+				<div class="card card-sm">
+					<div class="card-body">
+						<div class="subheader">Recibos emitidos</div>
+						<div class="h1 mb-0" th:text="${totalRecibos}">0</div>
+						<a th:href="@{/recibos}" class="small text-secondary">Ver todos</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-lg-3">
+				<div class="card card-sm">
+					<div class="card-body">
+						<div class="subheader">Faturamento total</div>
+						<div class="h1 mb-0 text-success"
+							th:text="${'R$ ' + #numbers.formatDecimal(valorTotalRecibos != null ? valorTotalRecibos : 0, 1, 2)}">
+							R$ 0,00</div>
+						<div class="small text-secondary">Soma dos recibos</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="card mt-3">
+			<div class="card-header">
+				<h3 class="card-title">Últimos recibos</h3>
+				<div class="card-actions">
+					<a th:href="@{/cadastrarRecibo}" class="btn btn-sm btn-primary">Novo recibo</a>
+					<a th:href="@{/recibos}" class="btn btn-sm btn-outline-primary">Ver todos</a>
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-vcenter card-table">
+					<thead>
+						<tr>
+							<th>Nº</th>
+							<th>Data</th>
+							<th>Cliente</th>
+							<th class="text-end">Valor</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="r : ${ultimosRecibos}">
+							<td th:text="${r.numeroRecibo}"></td>
+							<td th:text="${r.dataInclusao != null ? #dates.format(r.dataInclusao, 'dd-MM-yyyy') : ''}"></td>
+							<td th:text="${r.cliente != null ? r.cliente.nome : ''}"></td>
+							<td class="text-end"
+								th:text="${'R$ ' + #numbers.formatDecimal(r.valorTotal != null ? r.valorTotal : 0, 1, 2)}"></td>
+						</tr>
+						<tr th:if="${ultimosRecibos == null or ultimosRecibos.empty}">
+							<td colspan="4" class="text-secondary">Nenhum recibo emitido ainda.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+</body>
+
+</html>

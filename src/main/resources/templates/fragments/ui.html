@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+	<!--
+	  Cabeçalho de página reutilizável.
+	  Uso: th:replace="~{fragments/ui :: pageHeader('Cadastros','Clientes')}"
+	  (botões de ação ficam no card-header de cada tela)
+	-->
+	<div th:fragment="pageHeader(pretitulo, titulo)" class="page-header d-print-none">
+		<div class="page-pretitle" th:if="${pretitulo}" th:text="${pretitulo}"></div>
+		<h2 class="page-title" th:text="${titulo}"></h2>
+	</div>
+
+	<!--
+	  Paginação reutilizável para qualquer Page do Spring Data.
+	  Uso: th:replace="~{fragments/ui :: pagination(${clientes}, '/clientes')}"
+	-->
+	<div th:fragment="pagination(pagina, url)" class="card-footer d-flex align-items-center"
+		th:if="${pagina != null and pagina.totalPages > 1}">
+		<ul class="pagination ms-auto mb-0">
+			<li class="page-item"
+				th:each="i : ${#numbers.sequence(0, pagina.totalPages - 1)}"
+				th:classappend="${pagina.number == i} ? ' active'">
+				<a class="page-link" th:href="@{__${url}__(page=${i})}" th:text="${i + 1}"></a>
+			</li>
+		</ul>
+	</div>
+
+</body>
+
+</html>

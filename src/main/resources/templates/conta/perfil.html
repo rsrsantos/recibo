@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Meu Perfil</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Conta', 'Meu Perfil')}"></th:block>
+
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="card">
+					<div class="card-body">
+						<div class="d-flex align-items-center mb-4">
+							<span class="avatar avatar-lg bg-primary text-white fw-bold"
+								th:text="${#strings.toUpperCase(#strings.substring(usuario.username,0,1))}">A</span>
+							<div class="ms-3">
+								<h3 class="m-0" th:text="${usuario.nome}">Nome</h3>
+								<div class="text-secondary" th:text="'@' + ${usuario.username}">@user</div>
+							</div>
+						</div>
+
+						<div class="datagrid">
+							<div class="datagrid-item">
+								<div class="datagrid-title">Usuário</div>
+								<div class="datagrid-content" th:text="${usuario.username}"></div>
+							</div>
+							<div class="datagrid-item">
+								<div class="datagrid-title">Situação</div>
+								<div class="datagrid-content">
+									<span class="badge bg-success-lt" th:if="${usuario.ativo}">Ativo</span>
+									<span class="badge bg-danger-lt" th:unless="${usuario.ativo}">Inativo</span>
+								</div>
+							</div>
+							<div class="datagrid-item">
+								<div class="datagrid-title">Perfis</div>
+								<div class="datagrid-content">
+									<span class="badge bg-azure-lt me-1" th:each="p : ${usuario.perfis}"
+										th:text="${p.nome}"></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="mt-4">
+							<a th:href="@{/alterar-senha}" class="btn btn-primary">Alterar senha</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title layout:title-pattern="$CONTENT_TITLE — Recibos">Recibos</title>
+
+	<link rel="stylesheet" th:href="@{/vendor/tabler/css/tabler.min.css}">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<body>
+	<div class="page">
+
+		<!-- Menu superior + usuário logado à direita -->
+		<th:block th:replace="~{fragments/navbar :: navbar}"></th:block>
+
+		<div class="page-wrapper">
+			<div class="page-body">
+				<div class="container-xl">
+					<div layout:fragment="content">
+						<p>Conteúdo</p>
+					</div>
+				</div>
+			</div>
+
+			<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+		</div>
+	</div>
+
+	<!-- Toasts (sucesso / aviso / erro) -->
+	<th:block th:replace="~{fragments/toasts :: toasts}"></th:block>
+
+	<script th:src="@{/vendor/tabler/js/tabler.min.js}"></script>
+	<script th:src="@{/js/app.js}"></script>
+	<th:block layout:fragment="scripts"></th:block>
+</body>
+
+</html>

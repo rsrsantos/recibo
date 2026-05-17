@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+	<!--
+	  Container global de toasts. Mostra automaticamente conforme os
+	  flash attributes presentes:
+	    success / mensagem  -> sucesso (verde)
+	    aviso               -> aviso (amarelo)
+	    mensagem_erro / error -> erro (vermelho)
+	-->
+	<div th:fragment="toasts" class="toast-container position-fixed top-0 end-0 p-3"
+		style="z-index: 1090">
+
+		<div th:if="${success}" class="toast align-items-center text-bg-success border-0"
+			role="alert" data-bs-delay="4000">
+			<div class="d-flex">
+				<div class="toast-body" th:text="${success}"></div>
+				<button type="button" class="btn-close btn-close-white me-2 m-auto"
+					data-bs-dismiss="toast"></button>
+			</div>
+		</div>
+
+		<div th:if="${mensagem}" class="toast align-items-center text-bg-success border-0"
+			role="alert" data-bs-delay="4000">
+			<div class="d-flex">
+				<div class="toast-body" th:text="${mensagem}"></div>
+				<button type="button" class="btn-close btn-close-white me-2 m-auto"
+					data-bs-dismiss="toast"></button>
+			</div>
+		</div>
+
+		<div th:if="${aviso}" class="toast align-items-center text-bg-warning border-0"
+			role="alert" data-bs-delay="5000">
+			<div class="d-flex">
+				<div class="toast-body" th:text="${aviso}"></div>
+				<button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+			</div>
+		</div>
+
+		<div th:if="${mensagem_erro}" class="toast align-items-center text-bg-danger border-0"
+			role="alert" data-bs-delay="6000">
+			<div class="d-flex">
+				<div class="toast-body" th:text="${mensagem_erro}"></div>
+				<button type="button" class="btn-close btn-close-white me-2 m-auto"
+					data-bs-dismiss="toast"></button>
+			</div>
+		</div>
+
+		<div th:if="${error}" class="toast align-items-center text-bg-danger border-0"
+			role="alert" data-bs-delay="6000">
+			<div class="d-flex">
+				<div class="toast-body" th:text="${error}"></div>
+				<button type="button" class="btn-close btn-close-white me-2 m-auto"
+					data-bs-dismiss="toast"></button>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+
+</html>

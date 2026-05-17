@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Erro</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="empty">
+			<p class="empty-title">Ops, algo deu errado</p>
+			<p class="empty-subtitle text-secondary"
+				th:text="${mensagem} ?: 'Recurso não encontrado.'"></p>
+			<div class="empty-action">
+				<a th:href="@{/}" class="btn btn-primary">Voltar ao início</a>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

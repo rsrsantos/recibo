@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Clientes</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Cadastros', 'Clientes')}"></th:block>
+
+		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title">Lista de clientes</h3>
+				<div class="card-actions">
+					<a th:href="@{/cadastrarCliente}" class="btn btn-primary">Novo cliente</a>
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-vcenter card-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nome</th>
+							<th>CPF</th>
+							<th>Telefone</th>
+							<th class="w-1">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="cliente : ${clientes}">
+							<td th:text="${cliente.id}"></td>
+							<td th:text="${cliente.nome}"></td>
+							<td th:text="${cliente.cpf}"></td>
+							<td th:text="${cliente.telefone}"></td>
+							<td>
+								<a th:href="@{/editar-cliente(id=${cliente.id})}"
+									class="btn btn-sm btn-outline-primary">Editar</a>
+								<a href="#" class="btn btn-sm btn-outline-danger"
+									data-bs-toggle="modal" data-bs-target="#modalExcluir"
+									th:attr="data-url=@{/deletarCliente(id=${cliente.id})}">Excluir</a>
+							</td>
+						</tr>
+						<tr th:if="${clientes.empty}">
+							<td colspan="5" class="text-secondary">Nenhum cliente cadastrado.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<th:block th:replace="~{fragments/ui :: pagination(${clientes}, '/clientes')}"></th:block>
+		</div>
+
+		<th:block th:replace="~{modais/confirmar-exclusao :: modal}"></th:block>
+	</div>
+</body>
+
+</html>

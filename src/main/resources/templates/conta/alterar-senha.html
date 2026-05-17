@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Alterar Senha</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Conta', 'Alterar Senha')}"></th:block>
+
+		<div class="row">
+			<div class="col-lg-5">
+				<div class="card">
+					<div class="card-body">
+						<form method="post" th:action="@{/alterar-senha}">
+							<div class="mb-3">
+								<label class="form-label required">Senha atual</label>
+								<input type="password" name="senhaAtual" class="form-control" required>
+							</div>
+							<div class="mb-3">
+								<label class="form-label required">Nova senha</label>
+								<input type="password" name="novaSenha" class="form-control"
+									minlength="6" required>
+								<small class="form-hint">Mínimo de 6 caracteres.</small>
+							</div>
+							<div class="mb-3">
+								<label class="form-label required">Confirmar nova senha</label>
+								<input type="password" name="confirmacao" class="form-control"
+									minlength="6" required>
+							</div>
+							<div class="text-end">
+								<a th:href="@{/perfil}" class="btn btn-link">Cancelar</a>
+								<button type="submit" class="btn btn-primary">Salvar</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+
+</html>

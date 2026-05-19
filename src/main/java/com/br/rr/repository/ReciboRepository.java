@@ -21,6 +21,12 @@ public interface ReciboRepository extends JpaRepository<Recibo, Long> {
 
 	long countByUsuario(Usuario usuario);
 
+	@Query("select count(r) from Recibo r where r.usuario = :usuario "
+			+ "and r.dataGeracao >= :inicio and r.dataGeracao <= :fim")
+	long countNoPeriodo(@Param("usuario") Usuario usuario,
+			@Param("inicio") java.time.LocalDate inicio,
+			@Param("fim") java.time.LocalDate fim);
+
 	@Query("select coalesce(sum(r.vlrTotal), 0) from Recibo r where r.usuario = :usuario")
 	BigDecimal somaTotalPorUsuario(@Param("usuario") Usuario usuario);
 

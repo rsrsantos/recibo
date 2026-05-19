@@ -41,8 +41,13 @@
 					<div class="row">
 						<div class="col-md-6 mb-3">
 							<label class="form-label required">Preço mensal (R$)</label>
-							<input type="number" step="0.01" min="0" class="form-control"
-								th:field="*{precoMensal}" required>
+							<div class="input-group">
+								<span class="input-group-text">R$</span>
+								<input type="text" inputmode="numeric" class="form-control"
+									id="precoMensalDisplay" placeholder="0,00" autocomplete="off"
+									data-currency data-hidden="precoMensal">
+							</div>
+							<input type="hidden" id="precoMensal" th:field="*{precoMensal}">
 							<div class="text-danger small" th:if="${#fields.hasErrors('precoMensal')}"
 								th:errors="*{precoMensal}"></div>
 							<small class="text-secondary">Zero = plano gratuito</small>
@@ -97,6 +102,7 @@
 	<th:block layout:fragment="scripts">
 		<script>
 		(function () {
+			// Carência toggle
 			var chk = document.getElementById('chkCarencia');
 			var box = document.getElementById('boxCarenciaDias');
 			function sync() {
@@ -104,6 +110,18 @@
 				box.style.display = chk.checked ? '' : 'none';
 			}
 			if (chk) { chk.addEventListener('change', sync); sync(); }
+
+			// Valida preço obrigatório (campo display, hidden não dispara required)
+			var form = document.querySelector('form');
+			if (form) {
+				form.addEventListener('submit', function (e) {
+					var hidden = document.getElementById('precoMensal');
+					if (!hidden || hidden.value === '' || hidden.value === null) {
+						e.preventDefault();
+						document.getElementById('precoMensalDisplay').focus();
+					}
+				});
+			}
 		})();
 		</script>
 	</th:block>

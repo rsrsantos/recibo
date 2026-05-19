@@ -16,10 +16,13 @@ import com.br.rr.exception.RecursoNaoEncontradoException;
 import com.br.rr.models.Pessoa;
 import com.br.rr.models.Recibo;
 import com.br.rr.models.Usuario;
+import com.br.rr.models.Plano;
+import com.br.rr.models.UsuarioPlano;
 import com.br.rr.repository.ReciboRepository;
 import com.br.rr.service.ContaService;
 import com.br.rr.service.PessoaService;
 import com.br.rr.service.ReciboService;
+import com.br.rr.service.UsuarioPlanoService;
 
 @Service
 @Transactional
@@ -28,12 +31,36 @@ public class ReciboServiceImpl implements ReciboService {
 	private final ReciboRepository repository;
 	private final ContaService contaService;
 	private final PessoaService pessoaService;
+	private final UsuarioPlanoService usuarioPlanoService;
 
 	public ReciboServiceImpl(ReciboRepository repository, ContaService contaService,
-			PessoaService pessoaService) {
+			PessoaService pessoaService, UsuarioPlanoService usuarioPlanoService) {
 		this.repository = repository;
 		this.contaService = contaService;
 		this.pessoaService = pessoaService;
+		this.usuarioPlanoService = usuarioPlanoService;
+	}
+
+	/** Bloqueia se o plano ativo define limite e ele já foi atingido no mês. */
+	private void validarLimiteMensal(Usuario usuario) {
+		UsuarioPlano ativo = usuarioPlanoService.buscarAtivo(usuario).orElse(null);
+		if (ativo == null) {
+			return; // sem plano: o paywall já barra o acesso
+		}
+		Plano plano = ativo.getPlano();
+		Integer limite = plano.getLimiteRecibos();
+		if (limite == null) {
+			return; // ilimitado
+		}
+		LocalDate hoje = LocalDate.now();
+		LocalDate inicio = hoje.withDayOfMonth(1);
+		LocalDate fim = hoje.withDayOfMonth(hoje.lengthOfMonth());
+		long usados = repository.countNoPeriodo(usuario, inicio, fim);
+		if (usados >= limite) {
+			throw new NegocioException("Você atingiu o limite de " + limite
+					+ " recibos/mês do plano \"" + plano.getNome()
+					+ "\". Faça upgrade de plano em Meu Perfil para emitir mais.");
+		}
 	}
 
 	@Override
@@ -58,6 +85,7 @@ public class ReciboServiceImpl implements ReciboService {
 			throw new NegocioException("Informe um valor total válido.");
 		}
 		Usuario usuario = contaService.usuarioLogado();
+		validarLimiteMensal(usuario);
 		Pessoa destinatario = pessoaService.buscarPorId(form.getDestinatarioId());
 
 		Recibo recibo = new Recibo();

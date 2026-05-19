@@ -36,7 +36,7 @@
 					<div class="card-body">
 						<div class="subheader">Faturamento</div>
 						<div class="h1 mb-0 text-success"
-							th:text="${'R$ ' + #numbers.formatDecimal(valorTotalRecibos != null ? valorTotalRecibos : 0, 1, 2)}">
+							th:text="${'R$ ' + #numbers.formatDecimal(valorTotalRecibos != null ? valorTotalRecibos : 0, 1, 'POINT', 2, 'COMMA')}">
 							R$ 0,00</div>
 						<div class="small text-secondary">Soma dos recibos</div>
 					</div>
@@ -65,10 +65,10 @@
 					<tbody>
 						<tr th:each="r : ${ultimosRecibos}">
 							<td th:text="${r.nRecibo}"></td>
-							<td th:text="${r.dataGeracao}"></td>
+							<td th:text="${r.dataGeracao != null ? #temporals.format(r.dataGeracao, 'dd/MM/yyyy') : ''}"></td>
 							<td th:text="${r.destinatario != null ? r.destinatario.nome : ''}"></td>
 							<td class="text-end"
-								th:text="${'R$ ' + #numbers.formatDecimal(r.vlrTotal != null ? r.vlrTotal : 0, 1, 2)}"></td>
+								th:text="${'R$ ' + #numbers.formatDecimal(r.vlrTotal != null ? r.vlrTotal : 0, 1, 'POINT', 2, 'COMMA')}"></td>
 						</tr>
 						<tr th:if="${ultimosRecibos == null or ultimosRecibos.empty}">
 							<td colspan="4" class="text-secondary">Nenhum recibo emitido ainda.</td>

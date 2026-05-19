@@ -41,9 +41,10 @@ public class UsuarioPlanoServiceImpl implements UsuarioPlanoService {
 		up.setDtInicio(LocalDate.now());
 		up.setStatus("ATIVO");
 
-		// Carência definida no plano: dtFim marca o fim do período gratuito.
-		// Sem carência: dtFim nulo (sem validade / sem lembrete de pagamento).
-		if (plano.isTemCarencia() && plano.getCarenciaDias() > 0) {
+		// Carência habilitada: dtFim = hoje + carenciaDias.
+		// 0 dias = sem período gratuito = bloqueia imediatamente (dtFim = hoje).
+		// Sem carência (temCarencia=false): dtFim nulo = acesso indefinido.
+		if (plano.isTemCarencia()) {
 			up.setDtFim(LocalDate.now().plusDays(plano.getCarenciaDias()));
 		}
 

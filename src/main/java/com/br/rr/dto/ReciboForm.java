@@ -1,26 +1,32 @@
 package com.br.rr.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Dados que chegam do formulário de emissão de recibo. Desacopla a tela
- * da entidade JPA; a conversão para {@code Recibo} é feita na camada de serviço.
- */
 @Getter
 @Setter
 public class ReciboForm {
 
-	@NotNull(message = "Selecione um cliente")
-	private Long clienteId;
+	@NotNull(message = "Selecione o cliente")
+	private Long destinatarioId;
+
+	private String nRecibo;
+
+	@NotNull(message = "Informe o valor total")
+	private BigDecimal vlrTotal;
+
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+	private LocalDate dataGeracao;
+
+	private String referente;
 
 	private String observacao;
-
-	private List<ItemReciboForm> itens = new ArrayList<>();
 
 }

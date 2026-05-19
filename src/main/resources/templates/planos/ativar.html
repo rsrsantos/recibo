@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Ativar Plano</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Planos', 'Ativar Plano')}"></th:block>
+
+		<div class="row justify-content-center">
+			<div class="col-md-6">
+				<div class="card">
+					<div class="card-header text-center">
+						<h3 class="card-title" th:text="${plano.nome}">Plano</h3>
+					</div>
+					<div class="card-body text-center">
+						<p class="text-secondary" th:text="${plano.descricao}"></p>
+
+						<div class="my-4">
+							<span th:if="${plano.precoMensal != null and plano.precoMensal.signum() == 0}"
+								class="display-5 fw-bold text-success">Grátis</span>
+							<span th:unless="${plano.precoMensal != null and plano.precoMensal.signum() == 0}">
+								<span class="fs-4 text-secondary">R$</span>
+								<span class="display-5 fw-bold"
+									th:text="${#numbers.formatDecimal(plano.precoMensal, 1, 'POINT', 2, 'COMMA')}"></span>
+								<span class="text-secondary">/mês</span>
+							</span>
+						</div>
+
+						<ul class="list-unstyled text-start d-inline-block mb-4">
+							<li class="mb-2">
+								<svg xmlns="http://www.w3.org/2000/svg" class="text-success me-2"
+									width="16" height="16" viewBox="0 0 24 24" fill="none"
+									stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+								<span th:if="${plano.limiteRecibos != null}"
+									th:text="'Até ' + ${plano.limiteRecibos} + ' recibos/mês'"></span>
+								<span th:unless="${plano.limiteRecibos != null}">Recibos ilimitados</span>
+							</li>
+							<li class="mb-2">
+								<svg xmlns="http://www.w3.org/2000/svg"
+									th:class="${plano.funcPdf} ? 'text-success me-2' : 'text-muted me-2'"
+									width="16" height="16" viewBox="0 0 24 24" fill="none"
+									stroke="currentColor" stroke-width="2.5">
+									<th:block th:if="${plano.funcPdf}"><polyline points="20 6 9 17 4 12"/></th:block>
+									<th:block th:unless="${plano.funcPdf}"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></th:block>
+								</svg>
+								<span th:class="${plano.funcPdf} ? '' : 'text-muted'">Geração de PDF</span>
+							</li>
+							<li class="mb-2">
+								<svg xmlns="http://www.w3.org/2000/svg"
+									th:class="${plano.funcRelatorio} ? 'text-success me-2' : 'text-muted me-2'"
+									width="16" height="16" viewBox="0 0 24 24" fill="none"
+									stroke="currentColor" stroke-width="2.5">
+									<th:block th:if="${plano.funcRelatorio}"><polyline points="20 6 9 17 4 12"/></th:block>
+									<th:block th:unless="${plano.funcRelatorio}"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></th:block>
+								</svg>
+								<span th:class="${plano.funcRelatorio} ? '' : 'text-muted'">Relatórios</span>
+							</li>
+						</ul>
+
+						<!-- Aviso de carência (só quando o plano oferece) -->
+						<div class="alert alert-info" th:if="${plano.temCarencia and plano.carenciaDias > 0}">
+							<svg xmlns="http://www.w3.org/2000/svg" class="me-2" width="16" height="16"
+								viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+								<line x1="12" y1="16" x2="12.01" y2="16"/>
+							</svg>
+							Você terá
+							<strong th:text="${plano.carenciaDias} + ' dias'"></strong>
+							de uso gratuito. Após esse período, o pagamento será necessário
+							para continuar utilizando.
+						</div>
+
+						<form method="post" th:action="@{/planos/ativar}">
+							<input type="hidden" name="plano" th:value="${plano.id}">
+							<button type="submit" class="btn btn-primary btn-lg px-5">
+								<span th:if="${plano.temCarencia and plano.carenciaDias > 0}">
+									Iniciar período de carência
+								</span>
+								<span th:unless="${plano.temCarencia and plano.carenciaDias > 0}">
+									Ativar plano
+								</span>
+							</button>
+						</form>
+					</div>
+					<div class="card-footer text-center">
+						<a th:href="@{/inicio#planos}" class="text-secondary small">← Ver outros planos</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+
+</html>

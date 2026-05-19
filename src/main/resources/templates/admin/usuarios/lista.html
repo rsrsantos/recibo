@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Usuários</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Administração', 'Usuários')}"></th:block>
+
+		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title">Usuários do sistema</h3>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-vcenter card-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>E-mail</th>
+							<th>Nome</th>
+							<th>Perfil</th>
+							<th>Plano ativo</th>
+							<th>Cadastro</th>
+							<th>Status</th>
+							<th class="w-1">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="u : ${usuarios}">
+							<td th:text="${u.id}"></td>
+							<td th:text="${u.email}"></td>
+							<td th:text="${u.pessoa != null ? u.pessoa.nome : '—'}"></td>
+							<td>
+								<span th:if="${u.email == #authentication.name}"
+									class="badge bg-purple-lt"
+									th:text="${perfis.get(u.id)} + ' (você)'"></span>
+								<form th:unless="${u.email == #authentication.name}"
+									method="post" th:action="@{|/admin/usuarios/${u.id}/perfil|}"
+									class="d-flex gap-1 align-items-center">
+									<select name="perfilId" class="form-select form-select-sm"
+										style="width:auto" onchange="this.form.submit()">
+										<option th:each="pf : ${perfisDisponiveis}"
+											th:value="${pf.id}" th:text="${pf.nome}"
+											th:selected="${pf.nome == perfis.get(u.id)}"></option>
+									</select>
+								</form>
+							</td>
+							<td>
+								<span th:if="${planos.get(u.id) != null}" class="badge bg-azure-lt"
+									th:text="${planos.get(u.id)}"></span>
+								<span th:unless="${planos.get(u.id) != null}"
+									class="text-secondary">Sem plano</span>
+							</td>
+							<td th:text="${u.criadoEm != null ? #temporals.format(u.criadoEm, 'dd/MM/yyyy') : '—'}"></td>
+							<td>
+								<span th:if="${u.ativo}" class="badge bg-green-lt">Ativo</span>
+								<span th:unless="${u.ativo}" class="badge bg-red-lt">Inativo</span>
+							</td>
+							<td>
+								<div class="d-flex gap-2">
+									<a th:href="@{|/admin/usuarios/${u.id}/editar|}"
+										class="btn btn-sm btn-outline-primary">Editar</a>
+									<a th:unless="${u.email == #authentication.name}"
+										th:href="@{|/admin/usuarios/${u.id}/alternar|}"
+										th:class="${u.ativo} ? 'btn btn-sm btn-outline-danger' : 'btn btn-sm btn-outline-success'"
+										th:text="${u.ativo} ? 'Desativar' : 'Ativar'"
+										onclick="return confirm('Confirmar alteração de status?')"></a>
+								</div>
+							</td>
+						</tr>
+						<tr th:if="${usuarios.empty}">
+							<td colspan="8" class="text-secondary">Nenhum usuário.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<th:block th:replace="~{fragments/ui :: pagination(${usuarios}, '/admin/usuarios')}"></th:block>
+		</div>
+	</div>
+</body>
+
+</html>

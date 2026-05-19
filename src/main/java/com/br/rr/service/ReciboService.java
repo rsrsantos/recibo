@@ -1,5 +1,6 @@
 package com.br.rr.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -12,21 +13,19 @@ public interface ReciboService {
 
 	Page<Recibo> listar(Pageable pageable);
 
-	Recibo buscarPorId(long id);
+	Recibo buscarPorId(Long id);
 
-	/**
-	 * Cria um recibo a partir dos dados do formulário: resolve cliente/produtos
-	 * pelos ids, congela o preço unitário de cada item, calcula o total e gera
-	 * o número sequencial.
-	 */
 	Recibo emitir(ReciboForm form);
 
-	void excluir(long id);
+	void excluir(Long id);
 
 	long contar();
 
-	double somaValorTotal();
+	BigDecimal somaTotal();
 
 	List<Recibo> ultimos(int quantidade);
+
+	/** Próximo número sugerido (sequencial por usuário). */
+	long proximoNumero();
 
 }

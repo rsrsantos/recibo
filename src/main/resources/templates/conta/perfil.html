@@ -12,23 +12,24 @@
 
 		<th:block th:replace="~{fragments/ui :: pageHeader('Conta', 'Meu Perfil')}"></th:block>
 
-		<div class="row">
-			<div class="col-lg-6">
+		<div class="row row-cards">
+			<div class="col-lg-5">
 				<div class="card">
 					<div class="card-body">
 						<div class="d-flex align-items-center mb-4">
 							<span class="avatar avatar-lg bg-primary text-white fw-bold"
-								th:text="${#strings.toUpperCase(#strings.substring(usuario.username,0,1))}">A</span>
+								th:text="${#strings.toUpperCase(#strings.substring(usuario.email,0,1))}">A</span>
 							<div class="ms-3">
-								<h3 class="m-0" th:text="${usuario.nome}">Nome</h3>
-								<div class="text-secondary" th:text="'@' + ${usuario.username}">@user</div>
+								<h3 class="m-0"
+									th:text="${usuario.pessoa != null ? usuario.pessoa.nome : usuario.email}">Nome</h3>
+								<div class="text-secondary" th:text="${usuario.email}">email</div>
 							</div>
 						</div>
 
 						<div class="datagrid">
 							<div class="datagrid-item">
-								<div class="datagrid-title">Usuário</div>
-								<div class="datagrid-content" th:text="${usuario.username}"></div>
+								<div class="datagrid-title">E-mail</div>
+								<div class="datagrid-content" th:text="${usuario.email}"></div>
 							</div>
 							<div class="datagrid-item">
 								<div class="datagrid-title">Situação</div>
@@ -48,6 +49,90 @@
 
 						<div class="mt-4">
 							<a th:href="@{/alterar-senha}" class="btn btn-primary">Alterar senha</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-7">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Meu plano</h3>
+					</div>
+					<div class="card-body">
+
+						<!-- Plano ativo -->
+						<div th:if="${planoAtivo != null}" class="mb-4">
+							<div class="d-flex align-items-center justify-content-between">
+								<div>
+									<div class="h3 mb-1" th:text="${planoAtivo.plano.nome}">Plano</div>
+									<div class="text-secondary" th:text="${planoAtivo.plano.descricao}"></div>
+								</div>
+								<span class="badge bg-green-lt">Ativo</span>
+							</div>
+							<div class="datagrid mt-3">
+								<div class="datagrid-item">
+									<div class="datagrid-title">Início</div>
+									<div class="datagrid-content"
+										th:text="${planoAtivo.dtInicio != null ? #temporals.format(planoAtivo.dtInicio, 'dd/MM/yyyy') : '—'}"></div>
+								</div>
+								<div class="datagrid-item">
+									<div class="datagrid-title">Validade</div>
+									<div class="datagrid-content"
+										th:text="${planoAtivo.dtFim != null ? #temporals.format(planoAtivo.dtFim, 'dd/MM/yyyy') : 'Sem validade'}"></div>
+								</div>
+								<div class="datagrid-item">
+									<div class="datagrid-title">Preço</div>
+									<div class="datagrid-content">
+										<span th:if="${planoAtivo.plano.precoMensal != null and planoAtivo.plano.precoMensal.signum() == 0}"
+											class="text-success">Grátis</span>
+										<span th:unless="${planoAtivo.plano.precoMensal != null and planoAtivo.plano.precoMensal.signum() == 0}"
+											th:text="${'R$ ' + #numbers.formatDecimal(planoAtivo.plano.precoMensal, 1, 'POINT', 2, 'COMMA') + ' /mês'}"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div th:if="${planoAtivo == null}" class="alert alert-warning">
+							Você ainda não tem um plano ativo. Escolha um abaixo para começar.
+						</div>
+
+						<hr>
+
+						<h4 th:text="${planoAtivo != null} ? 'Trocar de plano' : 'Escolher plano'">Escolher plano</h4>
+						<div class="row row-cards mt-2">
+							<div class="col-md-6" th:each="pl : ${planosDisponiveis}">
+								<div class="card card-sm"
+									th:classappend="${planoAtivo != null and planoAtivo.plano.id == pl.id} ? ' border-success' : ''">
+									<div class="card-body">
+										<div class="d-flex justify-content-between align-items-start">
+											<strong th:text="${pl.nome}">Plano</strong>
+											<span th:if="${planoAtivo != null and planoAtivo.plano.id == pl.id}"
+												class="badge bg-green-lt">Atual</span>
+										</div>
+										<div class="text-secondary small mb-2" th:text="${pl.descricao}"></div>
+										<div class="mb-2">
+											<span th:if="${pl.precoMensal != null and pl.precoMensal.signum() == 0}"
+												class="h4 text-success">Grátis</span>
+											<span th:unless="${pl.precoMensal != null and pl.precoMensal.signum() == 0}"
+												class="h4"
+												th:text="${'R$ ' + #numbers.formatDecimal(pl.precoMensal, 1, 'POINT', 2, 'COMMA')}"></span>
+											<span th:unless="${pl.precoMensal != null and pl.precoMensal.signum() == 0}"
+												class="text-secondary small">/mês</span>
+										</div>
+										<a th:href="@{/planos/ativar(plano=${pl.id})}"
+											th:unless="${planoAtivo != null and planoAtivo.plano.id == pl.id}"
+											class="btn btn-sm btn-outline-primary w-100">
+											<span th:text="${planoAtivo != null} ? 'Trocar para este' : 'Selecionar'">Selecionar</span>
+										</a>
+										<button th:if="${planoAtivo != null and planoAtivo.plano.id == pl.id}"
+											class="btn btn-sm btn-success w-100" disabled>Plano atual</button>
+									</div>
+								</div>
+							</div>
+							<div th:if="${#lists.isEmpty(planosDisponiveis)}" class="col-12">
+								<p class="text-secondary">Nenhum plano disponível no momento.</p>
+							</div>
 						</div>
 					</div>
 				</div>

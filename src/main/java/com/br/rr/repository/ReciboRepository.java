@@ -1,19 +1,30 @@
 package com.br.rr.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.br.rr.models.Recibo;
+import com.br.rr.models.Usuario;
 
 public interface ReciboRepository extends JpaRepository<Recibo, Long> {
 
-	@Query("select coalesce(sum(r.valorTotal), 0) from Recibo r")
-	double somaValorTotal();
+	Page<Recibo> findByUsuario(Usuario usuario, Pageable pageable);
 
-	@Query("select r from Recibo r order by r.id desc")
-	List<Recibo> ultimos(Pageable pageable);
+	Optional<Recibo> findByIdAndUsuario(Long id, Usuario usuario);
+
+	long countByUsuario(Usuario usuario);
+
+	@Query("select coalesce(sum(r.vlrTotal), 0) from Recibo r where r.usuario = :usuario")
+	BigDecimal somaTotalPorUsuario(@Param("usuario") Usuario usuario);
+
+	@Query("select r from Recibo r where r.usuario = :usuario order by r.id desc")
+	List<Recibo> ultimos(@Param("usuario") Usuario usuario, Pageable pageable);
 
 }

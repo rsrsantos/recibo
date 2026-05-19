@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Perfis</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Administração', 'Perfis')}"></th:block>
+
+		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title">Perfis de acesso</h3>
+				<div class="card-actions">
+					<a th:href="@{/admin/perfis/novo}" class="btn btn-primary">Novo perfil</a>
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-vcenter card-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nome</th>
+							<th>Tipo</th>
+							<th>Usuários</th>
+							<th class="w-1">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="p : ${perfis}">
+							<td th:text="${p.id}"></td>
+							<td><strong th:text="${p.nome}"></strong></td>
+							<td>
+								<span th:if="${sistema.get(p.id)}" class="badge bg-purple-lt">Sistema</span>
+								<span th:unless="${sistema.get(p.id)}" class="badge bg-azure-lt">Personalizado</span>
+							</td>
+							<td th:text="${usuariosPorPerfil.get(p.id)}">0</td>
+							<td>
+								<div class="d-flex gap-2" th:if="${!sistema.get(p.id)}">
+									<a th:href="@{|/admin/perfis/${p.id}/editar|}"
+										class="btn btn-sm btn-outline-primary">Editar</a>
+									<a th:href="@{|/admin/perfis/${p.id}/excluir|}"
+										class="btn btn-sm btn-outline-danger"
+										onclick="return confirm('Excluir este perfil?')">Excluir</a>
+								</div>
+								<span th:if="${sistema.get(p.id)}" class="text-secondary small">
+									Protegido
+								</span>
+							</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(perfis)}">
+							<td colspan="5" class="text-secondary">Nenhum perfil.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

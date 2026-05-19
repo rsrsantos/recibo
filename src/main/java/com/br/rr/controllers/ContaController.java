@@ -8,20 +8,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.br.rr.exception.NegocioException;
+import com.br.rr.models.Usuario;
 import com.br.rr.service.ContaService;
+import com.br.rr.service.PlanoService;
+import com.br.rr.service.UsuarioPlanoService;
 
 @Controller
 public class ContaController {
 
 	private final ContaService contaService;
+	private final UsuarioPlanoService usuarioPlanoService;
+	private final PlanoService planoService;
 
-	public ContaController(ContaService contaService) {
+	public ContaController(ContaService contaService,
+			UsuarioPlanoService usuarioPlanoService, PlanoService planoService) {
 		this.contaService = contaService;
+		this.usuarioPlanoService = usuarioPlanoService;
+		this.planoService = planoService;
 	}
 
 	@GetMapping("/perfil")
 	public String perfil(Model model) {
-		model.addAttribute("usuario", contaService.usuarioLogado());
+		Usuario usuario = contaService.usuarioLogado();
+		model.addAttribute("usuario", usuario);
+		model.addAttribute("planoAtivo",
+				usuarioPlanoService.buscarAtivo(usuario).orElse(null));
+		model.addAttribute("planosDisponiveis", planoService.listarAtivos());
 		return "conta/perfil";
 	}
 

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Cliente</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Cadastros', 'Cliente')}"></th:block>
+
+		<div class="card">
+			<div class="card-body">
+				<form method="post" th:action="@{/pessoas}" th:object="${pessoaForm}" id="formPessoa">
+					<input type="hidden" th:field="*{id}">
+					<div class="row">
+						<div class="col-md-8 mb-3">
+							<label class="form-label required">Nome</label>
+							<input type="text" class="form-control" th:field="*{nome}" required>
+						</div>
+						<div class="col-md-4 mb-3">
+							<label class="form-label required">Tipo</label>
+							<select class="form-select" th:field="*{tipo}">
+								<option th:each="t : ${tipos}" th:value="${t}" th:text="${t}"></option>
+							</select>
+						</div>
+					</div>
+
+					<div id="bloco-fisica">
+						<h4 class="mt-2">Pessoa Física</h4>
+						<div class="row">
+							<div class="col-md-4 mb-3">
+								<label class="form-label">CPF</label>
+								<input type="text" class="form-control" th:field="*{cpf}"
+									placeholder="000.000.000-00" inputmode="numeric" autocomplete="off">
+							</div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Identidade</label>
+								<input type="text" class="form-control" th:field="*{identidade}">
+							</div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Nascimento</label>
+								<input type="date" class="form-control" th:field="*{dtNascimento}">
+							</div>
+						</div>
+					</div>
+
+					<div id="bloco-juridica">
+						<h4 class="mt-2">Pessoa Jurídica</h4>
+						<div class="row">
+							<div class="col-md-6 mb-3">
+								<label class="form-label">Razão social</label>
+								<input type="text" class="form-control" th:field="*{razao}">
+							</div>
+							<div class="col-md-6 mb-3">
+								<label class="form-label">Nome fantasia</label>
+								<input type="text" class="form-control" th:field="*{fantasia}">
+							</div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">CNPJ</label>
+								<input type="text" class="form-control" th:field="*{cnpj}"
+									placeholder="00.000.000/0000-00" inputmode="numeric" autocomplete="off">
+							</div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Inscr. Estadual</label>
+								<input type="text" class="form-control" th:field="*{inscricaoEstadual}">
+							</div>
+							<div class="col-md-4 mb-3">
+								<label class="form-label">Inscr. Municipal</label>
+								<input type="text" class="form-control" th:field="*{inscricaoMunicipal}">
+							</div>
+						</div>
+					</div>
+
+					<div class="text-end">
+						<a th:href="@{/pessoas}" class="btn btn-link">Cancelar</a>
+						<button type="submit" class="btn btn-primary">Salvar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<th:block layout:fragment="scripts">
+		<script th:src="@{/js/pessoa.js}"></script>
+	</th:block>
+</body>
+
+</html>

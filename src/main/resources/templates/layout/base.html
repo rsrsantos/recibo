@@ -33,9 +33,52 @@
 	<!-- Toasts (sucesso / aviso / erro) -->
 	<th:block th:replace="~{fragments/toasts :: toasts}"></th:block>
 
+	<!-- Modal de lembrete de pagamento (plano vencido ou vencendo em ≤7 dias) -->
+	<div th:if="${alertaPlano != null}" class="modal modal-blur fade" id="modalAlertaPlano"
+		tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered modal-sm">
+			<div class="modal-content">
+				<div class="modal-header bg-warning-lt">
+					<h5 class="modal-title">
+						<svg xmlns="http://www.w3.org/2000/svg" class="me-2 text-warning"
+							width="20" height="20" viewBox="0 0 24 24" fill="none"
+							stroke="currentColor" stroke-width="2">
+							<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+							<line x1="12" y1="9" x2="12" y2="13"/>
+							<line x1="12" y1="17" x2="12.01" y2="17"/>
+						</svg>
+						Atenção: plano expirando
+					</h5>
+				</div>
+				<div class="modal-body text-center py-4">
+					<p th:if="${alertaPlano >= 0}">
+						Seu plano vence em <strong th:text="${alertaPlano} + ' dia(s)'"></strong>.
+						Realize o pagamento para continuar usando o sistema sem interrupções.
+					</p>
+					<p th:if="${alertaPlano < 0}">
+						Seu plano está <strong class="text-danger">vencido</strong>.
+						Regularize o pagamento para continuar emitindo recibos.
+					</p>
+				</div>
+				<div class="modal-footer justify-content-center">
+					<a th:href="@{/inicio#planos}" class="btn btn-primary">Ver planos</a>
+					<button type="button" class="btn btn-link text-secondary"
+						data-bs-dismiss="modal">Lembrar depois</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<script th:src="@{/vendor/tabler/js/tabler.min.js}"></script>
 	<script th:src="@{/js/app.js}"></script>
+	<script th:src="@{/js/mascaras.js}"></script>
 	<th:block layout:fragment="scripts"></th:block>
+	<script th:if="${alertaPlano != null}">
+		document.addEventListener('DOMContentLoaded', function () {
+			var el = document.getElementById('modalAlertaPlano');
+			if (el) { var m = new bootstrap.Modal(el); m.show(); }
+		});
+	</script>
 </body>
 
 </html>

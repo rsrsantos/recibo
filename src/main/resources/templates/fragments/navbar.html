@@ -30,16 +30,29 @@
 						<a class="nav-link" th:href="@{/}">Início</a>
 					</li>
 					<li class="nav-item"
-						th:classappend="${currentUri != null and #strings.startsWith(currentUri, '/cliente')} ? ' active'">
-						<a class="nav-link" th:href="@{/clientes}">Clientes</a>
+						th:classappend="${currentUri != null and #strings.startsWith(currentUri, '/pessoas')} ? ' active'">
+						<a class="nav-link" th:href="@{/pessoas}">Clientes</a>
 					</li>
 					<li class="nav-item"
-						th:classappend="${currentUri != null and #strings.startsWith(currentUri, '/produto')} ? ' active'">
-						<a class="nav-link" th:href="@{/produtos}">Produtos</a>
-					</li>
-					<li class="nav-item"
-						th:classappend="${currentUri != null and (#strings.startsWith(currentUri, '/recibo') or #strings.startsWith(currentUri, '/cadastrarRecibo'))} ? ' active'">
+						th:classappend="${currentUri != null and #strings.startsWith(currentUri, '/recibos')} ? ' active'">
 						<a class="nav-link" th:href="@{/recibos}">Recibos</a>
+					</li>
+					<li class="nav-item dropdown"
+						th:classappend="${currentUri != null and #strings.startsWith(currentUri, '/emitente')} ? ' active'">
+						<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Configurações</a>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" th:href="@{/emitente}">Dados do Emitente</a>
+						</div>
+					</li>
+					<li class="nav-item dropdown" sec:authorize="hasRole('ADMINISTRADOR')"
+						th:classappend="${currentUri != null and #strings.startsWith(currentUri, '/admin')} ? ' active'">
+						<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Admin</a>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" th:href="@{/admin}">Painel de assinaturas</a>
+							<a class="dropdown-item" th:href="@{/admin/planos}">Planos</a>
+							<a class="dropdown-item" th:href="@{/admin/usuarios}">Usuários</a>
+							<a class="dropdown-item" th:href="@{/admin/perfis}">Perfis</a>
+						</div>
 					</li>
 				</ul>
 

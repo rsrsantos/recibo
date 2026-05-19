@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Meus Dados</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Configurações', 'Dados do Emitente')}"></th:block>
+
+		<form method="post" th:action="@{/emitente}" th:object="${emitenteForm}" id="formEmitente">
+
+			<div class="card mb-3">
+				<div class="card-header">
+					<h3 class="card-title">Identificação</h3>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<label class="form-label required">Nome / Razão Social</label>
+							<input type="text" class="form-control" th:field="*{nome}" required>
+							<div class="invalid-feedback"
+								th:if="${#fields.hasErrors('nome')}"
+								th:errors="*{nome}"></div>
+						</div>
+						<div class="col-md-3 mb-3">
+							<label class="form-label required">Tipo</label>
+							<select class="form-select" th:field="*{tipo}" id="emitenteType">
+								<option th:each="t : ${tipos}" th:value="${t}"
+									th:text="${t == 'FISICA'} ? 'Pessoa Física' : 'Pessoa Jurídica'"></option>
+							</select>
+						</div>
+						<div class="col-md-3 mb-3">
+							<label class="form-label" id="lblDocumento">CPF</label>
+							<input type="text" class="form-control" th:field="*{documento}"
+								inputmode="numeric" autocomplete="off"
+								data-mask="cpf" id="emitenteDocumento"
+								placeholder="000.000.000-00">
+						</div>
+					</div>
+
+					<div class="row" id="blocoJuridica" style="display:none">
+						<div class="col-md-6 mb-3">
+							<label class="form-label">Nome fantasia</label>
+							<input type="text" class="form-control" th:field="*{razaoSocial}">
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-4 mb-3">
+							<label class="form-label">Telefone</label>
+							<input type="text" class="form-control" th:field="*{telefone}"
+								inputmode="numeric" autocomplete="off"
+								data-mask="telefone" placeholder="(00) 00000-0000">
+						</div>
+						<div class="col-md-4 mb-3">
+							<label class="form-label">E-mail</label>
+							<input type="email" class="form-control" th:field="*{email}"
+								placeholder="contato@exemplo.com.br">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="card mb-3">
+				<div class="card-header">
+					<h3 class="card-title">Endereço</h3>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-3 mb-3">
+							<label class="form-label">CEP</label>
+							<input type="text" class="form-control" th:field="*{cep}"
+								inputmode="numeric" autocomplete="off"
+								data-mask="cep" placeholder="00000-000" id="emitenteCep">
+						</div>
+						<div class="col-md-7 mb-3">
+							<label class="form-label">Logradouro</label>
+							<input type="text" class="form-control" th:field="*{logradouro}"
+								id="emitenteLogradouro">
+						</div>
+						<div class="col-md-2 mb-3">
+							<label class="form-label">Número</label>
+							<input type="text" class="form-control" th:field="*{numero}">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 mb-3">
+							<label class="form-label">Bairro</label>
+							<input type="text" class="form-control" th:field="*{bairro}"
+								id="emitenteBairro">
+						</div>
+						<div class="col-md-5 mb-3">
+							<label class="form-label">Cidade</label>
+							<input type="text" class="form-control" th:field="*{cidade}"
+								id="emitenteCidade">
+						</div>
+						<div class="col-md-3 mb-3">
+							<label class="form-label">Estado (UF)</label>
+							<input type="text" class="form-control" th:field="*{estado}"
+								maxlength="2" style="text-transform:uppercase"
+								placeholder="SP">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="text-end">
+				<button type="submit" class="btn btn-primary">Salvar dados</button>
+			</div>
+		</form>
+
+	</div>
+
+	<th:block layout:fragment="scripts">
+		<script>
+		(function () {
+			const sel = document.getElementById('emitenteType');
+			const doc = document.getElementById('emitenteDocumento');
+			const lbl = document.getElementById('lblDocumento');
+			const blocoJur = document.getElementById('blocoJuridica');
+
+			function aplicar() {
+				const jur = sel && sel.value === 'JURIDICA';
+				if (doc) {
+					doc.setAttribute('data-mask', jur ? 'cnpj' : 'cpf');
+					doc.placeholder = jur ? '00.000.000/0000-00' : '000.000.000-00';
+					doc.removeAttribute('data-mask-bound');
+					if (doc.value) {
+						doc.value = doc.value.replace(/\D/g, '');
+					}
+					if (window.aplicarMascaras) window.aplicarMascaras();
+				}
+				if (lbl) lbl.textContent = jur ? 'CNPJ' : 'CPF';
+				if (blocoJur) blocoJur.style.display = jur ? '' : 'none';
+			}
+
+			if (sel) {
+				sel.addEventListener('change', aplicar);
+				aplicar();
+			}
+
+			// Preenchimento automático de endereço via CEP
+			const cepInput = document.getElementById('emitenteCep');
+			if (cepInput) {
+				cepInput.addEventListener('blur', function () {
+					const cep = cepInput.value.replace(/\D/g, '');
+					if (cep.length !== 8) return;
+					fetch('https://viacep.com.br/ws/' + cep + '/json/')
+						.then(r => r.json())
+						.then(d => {
+							if (d.erro) return;
+							const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+							set('emitenteLogradouro', d.logradouro);
+							set('emitenteBairro', d.bairro);
+							set('emitenteCidade', d.localidade);
+							const uf = document.querySelector('[name="estado"]');
+							if (uf) uf.value = d.uf || '';
+						})
+						.catch(() => {});
+				});
+			}
+		})();
+		</script>
+	</th:block>
+</body>
+
+</html>

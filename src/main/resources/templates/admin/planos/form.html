@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Plano</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Administração', 'Plano')}"></th:block>
+
+		<div class="card">
+			<div class="card-body">
+				<form method="post" th:action="@{/admin/planos}" th:object="${planoForm}">
+					<input type="hidden" th:field="*{id}">
+
+					<div class="row">
+						<div class="col-md-8 mb-3">
+							<label class="form-label required">Nome</label>
+							<input type="text" class="form-control" th:field="*{nome}" required>
+							<div class="text-danger small" th:if="${#fields.hasErrors('nome')}"
+								th:errors="*{nome}"></div>
+						</div>
+						<div class="col-md-4 mb-3">
+							<label class="form-label">Status</label>
+							<select class="form-select" th:field="*{ativo}">
+								<option th:value="true">Ativo</option>
+								<option th:value="false">Inativo</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Descrição</label>
+						<textarea class="form-control" rows="2" th:field="*{descricao}"></textarea>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<label class="form-label required">Preço mensal (R$)</label>
+							<input type="number" step="0.01" min="0" class="form-control"
+								th:field="*{precoMensal}" required>
+							<div class="text-danger small" th:if="${#fields.hasErrors('precoMensal')}"
+								th:errors="*{precoMensal}"></div>
+							<small class="text-secondary">Zero = plano gratuito</small>
+						</div>
+						<div class="col-md-6 mb-3">
+							<label class="form-label">Limite de recibos/mês</label>
+							<input type="number" min="0" class="form-control" th:field="*{limiteRecibos}"
+								placeholder="Vazio = ilimitado">
+							<small class="text-secondary">Vazio = recibos ilimitados</small>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<label class="form-check form-switch">
+								<input class="form-check-input" type="checkbox"
+									th:field="*{temCarencia}" id="chkCarencia">
+								<span class="form-check-label">Oferece período de carência (uso gratuito)</span>
+							</label>
+						</div>
+						<div class="col-md-6 mb-3" id="boxCarenciaDias">
+							<label class="form-label">Carência (dias)</label>
+							<input type="number" min="0" class="form-control" th:field="*{carenciaDias}">
+							<small class="text-secondary">Dias de uso gratuito após contratar</small>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<label class="form-check form-switch">
+								<input class="form-check-input" type="checkbox" th:field="*{funcPdf}">
+								<span class="form-check-label">Permite geração de PDF</span>
+							</label>
+						</div>
+						<div class="col-md-6 mb-3">
+							<label class="form-check form-switch">
+								<input class="form-check-input" type="checkbox" th:field="*{funcRelatorio}">
+								<span class="form-check-label">Permite relatórios</span>
+							</label>
+						</div>
+					</div>
+
+					<div class="text-end">
+						<a th:href="@{/admin/planos}" class="btn btn-link">Cancelar</a>
+						<button type="submit" class="btn btn-primary">Salvar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<th:block layout:fragment="scripts">
+		<script>
+		(function () {
+			var chk = document.getElementById('chkCarencia');
+			var box = document.getElementById('boxCarenciaDias');
+			function sync() {
+				if (!chk || !box) return;
+				box.style.display = chk.checked ? '' : 'none';
+			}
+			if (chk) { chk.addEventListener('change', sync); sync(); }
+		})();
+		</script>
+	</th:block>
+</body>
+
+</html>

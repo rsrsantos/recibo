@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Novo Recibo</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Movimento', 'Novo Recibo')}"></th:block>
+
+		<form method="post" th:action="@{/recibos}" th:object="${reciboForm}"
+			id="formRecibo"
+			th:attr="data-url-buscar=@{/pessoas/buscar},data-url-rapido=@{/pessoas/rapido},data-proximo=${proximoNumero}">
+
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<!-- Cliente: busca dinâmica + cadastro rápido -->
+						<div class="col-md-6 mb-3 position-relative">
+							<label class="form-label required">Cliente</label>
+							<div class="input-group">
+								<input type="text" id="clienteBusca" class="form-control"
+									placeholder="Digite o nome do cliente..." autocomplete="off">
+								<button type="button" class="btn btn-outline-primary"
+									data-bs-toggle="modal" data-bs-target="#modalNovoCliente">Novo</button>
+							</div>
+							<input type="hidden" th:field="*{destinatarioId}">
+							<div id="clienteResultados" class="list-group cliente-resultados"></div>
+							<small class="text-secondary" id="clienteSelecionado"></small>
+						</div>
+
+						<div class="col-md-3 mb-3">
+							<label class="form-label">Número</label>
+							<div class="input-group">
+								<input type="text" class="form-control" th:field="*{nRecibo}"
+									th:value="${proximoNumero}">
+								<button type="button" class="btn btn-outline-secondary"
+									id="btnGerarNumero">Gerar</button>
+							</div>
+						</div>
+
+						<div class="col-md-3 mb-3">
+							<label class="form-label required">Valor</label>
+							<div class="input-group">
+								<span class="input-group-text">R$</span>
+								<input type="text" inputmode="numeric" class="form-control"
+									id="valorRecibo" placeholder="0,00" autocomplete="off" required>
+							</div>
+							<input type="hidden" th:field="*{vlrTotal}" id="vlrTotal">
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-9 mb-3">
+							<label class="form-label">A importância de (automático, conforme o valor)</label>
+							<input type="text" class="form-control bg-light" id="importanciaExtenso"
+								readonly>
+						</div>
+						<div class="col-md-3 mb-3">
+							<label class="form-label">Data</label>
+							<input type="date" class="form-control" id="dataRecibo"
+								th:field="*{dataGeracao}">
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Referente</label>
+						<textarea class="form-control" rows="2" th:field="*{referente}"></textarea>
+					</div>
+
+					<div class="mb-1">
+						<label class="form-label">Observações</label>
+						<textarea class="form-control" rows="2" th:field="*{observacao}"></textarea>
+					</div>
+				</div>
+			</div>
+
+			<div class="text-end mt-3">
+				<a th:href="@{/recibos}" class="btn btn-link">Cancelar</a>
+				<button type="button" class="btn btn-outline-secondary" disabled
+					title="Disponível em breve (Jasper)">Imprimir</button>
+				<button type="submit" class="btn btn-primary">Salvar</button>
+			</div>
+		</form>
+
+		<!-- Modal: cadastro rápido de cliente -->
+		<div class="modal modal-blur fade" id="modalNovoCliente" tabindex="-1">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Novo cliente</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-3">
+							<label class="form-label required">Nome</label>
+							<input type="text" id="nc-nome" class="form-control">
+						</div>
+						<div class="row">
+							<div class="col-6 mb-3">
+								<label class="form-label">Tipo</label>
+								<select id="nc-tipo" class="form-select">
+									<option value="FISICA">Física</option>
+									<option value="JURIDICA">Jurídica</option>
+								</select>
+							</div>
+							<div class="col-6 mb-3">
+								<label class="form-label">CPF/CNPJ</label>
+								<input type="text" id="nc-documento" class="form-control"
+									placeholder="CPF ou CNPJ" inputmode="numeric" autocomplete="off">
+							</div>
+						</div>
+						<div class="text-danger small" id="nc-erro"></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+						<button type="button" class="btn btn-primary" id="btnSalvarCliente">Salvar
+							cliente</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<th:block layout:fragment="scripts">
+		<script th:src="@{/js/recibo.js}"></script>
+	</th:block>
+</body>
+
+</html>

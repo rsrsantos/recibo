@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Perfil</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Administração', 'Perfil')}"></th:block>
+
+		<div class="card">
+			<div class="card-body">
+				<form method="post" th:action="@{/admin/perfis}" th:object="${perfilForm}">
+					<input type="hidden" th:field="*{id}">
+
+					<div class="mb-3">
+						<label class="form-label required">Nome do perfil</label>
+						<input type="text" class="form-control" th:field="*{nome}"
+							placeholder="Ex.: FINANCEIRO" required
+							style="text-transform:uppercase">
+						<div class="text-danger small" th:if="${#fields.hasErrors('nome')}"
+							th:errors="*{nome}"></div>
+						<small class="text-secondary">
+							Será gravado em maiúsculas. Para restringir telas a este perfil,
+							ajuste a configuração de segurança no código.
+						</small>
+					</div>
+
+					<div class="text-end">
+						<a th:href="@{/admin/perfis}" class="btn btn-link">Cancelar</a>
+						<button type="submit" class="btn btn-primary">Salvar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

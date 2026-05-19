@@ -1,10 +1,12 @@
 package com.br.rr.models;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,11 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,40 +25,43 @@ public class Recibo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "empresa_id")
-	private Empresa empresa;
+	@Column(name = "n_recibo", length = 30, updatable = false)
+	private String nRecibo;
 
-	@ManyToOne
-	@JoinColumn(name = "cliente_id")
-	private Cliente cliente;
+	@Column(name = "data_geracao", nullable = false, updatable = false)
+	private LocalDate dataGeracao = LocalDate.now();
 
-	private Integer numeroRecibo;
+	@Column(name = "vlr_total", nullable = false, updatable = false)
+	private BigDecimal vlrTotal = BigDecimal.ZERO;
 
+	@Column(length = 500, updatable = false)
+	private String referente;
+
+	@Column(updatable = false)
 	private String observacao;
 
-	private Double valorTotal;
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "usuario_id", nullable = false, updatable = false)
+	private Usuario usuario;
+
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "destinatario_id", nullable = false, updatable = false)
+	private Pessoa destinatario;
 
 	@OneToMany(mappedBy = "recibo", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ReciboProduto> itens = new ArrayList<>();
+	private List<ReciboItem> itens = new ArrayList<>();
 
-	@CreationTimestamp
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
-	private Date dataInclusao;
-
-	/**
-	 * Vincula os itens a este recibo e recalcula o valor total a partir
-	 * dos subtotais de cada item. Chamado pela camada de serviço antes de salvar.
-	 */
+	/** Vincula itens e recalcula o total a partir dos subtotais. */
 	public void recalcularTotal() {
-		double total = 0d;
-		for (ReciboProduto item : itens) {
+		BigDecimal total = BigDecimal.ZERO;
+		for (ReciboItem item : itens) {
 			item.setRecibo(this);
-			total += item.getSubtotal();
+			item.recalcular();
+			total = total.add(item.getVlrTotal());
 		}
-		this.valorTotal = total;
+		this.vlrTotal = total;
 	}
 
 }

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title>Criar conta — Recibos</title>
+	<link rel="stylesheet" th:href="@{/vendor/tabler/css/tabler.min.css}">
+	<link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+
+<body>
+	<div class="row g-0 login-wrap">
+
+		<!-- Painel de marca -->
+		<div class="col-lg-6 d-none d-lg-flex flex-column justify-content-between login-aside p-5">
+			<div class="login-brand d-flex align-items-center gap-3">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+					stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M5 21V5a2 2 0 0 1 2-2h7l5 5v13l-2-1.5L15 21l-2-1.5L11 21l-2-1.5L7 21z" />
+					<path d="M9 7h6M9 11h6M9 15h4" />
+				</svg>
+				<span class="h2 m-0">Recibos</span>
+			</div>
+			<div>
+				<h1 class="display-6 fw-bold">Comece a emitir recibos hoje</h1>
+				<p class="fs-4 opacity-75 mt-3">
+					Crie sua conta gratuitamente e tenha controle total
+					dos seus recibimentos em minutos.
+				</p>
+			</div>
+			<div class="opacity-75 small">
+				© <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2026</span>
+				Santos Informática
+			</div>
+		</div>
+
+		<!-- Formulário -->
+		<div class="col-lg-6 d-flex align-items-center justify-content-center p-4 login-form-side">
+			<div class="login-card">
+				<div class="text-center mb-4 d-lg-none">
+					<span class="h2">Recibos</span>
+				</div>
+
+				<div class="card">
+					<div class="card-header">
+						<div>
+							<div class="page-pretitle">Acesso</div>
+							<h2 class="card-title">Criar conta</h2>
+						</div>
+					</div>
+					<div class="card-body">
+
+						<div class="alert alert-danger" th:if="${erro}" th:text="${erro}"></div>
+
+						<form method="post" th:action="@{/cadastro}"
+							th:object="${cadastroForm}" autocomplete="off">
+
+							<input type="hidden" th:field="*{planoId}">
+
+							<div class="mb-3">
+								<label class="form-label required">Nome completo</label>
+								<input type="text" name="nome" class="form-control form-control-lg"
+									th:value="*{nome}" placeholder="Seu nome" required autofocus>
+								<div class="text-danger small"
+									th:if="${#fields.hasErrors('nome')}"
+									th:errors="*{nome}"></div>
+							</div>
+
+							<div class="mb-3">
+								<label class="form-label required">E-mail</label>
+								<input type="email" name="email" class="form-control form-control-lg"
+									th:value="*{email}" placeholder="seu@email.com" required>
+								<div class="text-danger small"
+									th:if="${#fields.hasErrors('email')}"
+									th:errors="*{email}"></div>
+							</div>
+
+							<div class="mb-3">
+								<label class="form-label required">Senha</label>
+								<input type="password" name="senha" class="form-control form-control-lg"
+									placeholder="Mínimo 6 caracteres" required>
+								<div class="text-danger small"
+									th:if="${#fields.hasErrors('senha')}"
+									th:errors="*{senha}"></div>
+							</div>
+
+							<div class="mb-4">
+								<label class="form-label required">Confirmar senha</label>
+								<input type="password" name="confirmacao" class="form-control form-control-lg"
+									placeholder="Repita a senha" required>
+							</div>
+
+							<button type="submit" class="btn btn-primary btn-lg w-100">
+								Criar minha conta
+							</button>
+						</form>
+
+						<div class="text-center mt-3">
+							<span class="text-secondary small">Já tem conta?</span>
+							<a th:href="@{/login}" class="small ms-1">Entrar</a>
+						</div>
+						<div class="text-center mt-2">
+							<a th:href="@{/inicio}" class="text-secondary small">← Ver planos</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<script th:src="@{/vendor/tabler/js/tabler.min.js}"></script>
+</body>
+
+</html>

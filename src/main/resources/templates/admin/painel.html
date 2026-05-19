@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Painel Admin</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Administração', 'Painel de Assinaturas')}"></th:block>
+
+		<div class="row row-cards">
+			<div class="col-sm-6 col-lg-3">
+				<div class="card card-sm">
+					<div class="card-body">
+						<div class="subheader">Assinaturas ativas</div>
+						<div class="h1 mb-0" th:text="${totalAtivas}">0</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-lg-3">
+				<div class="card card-sm">
+					<div class="card-body">
+						<div class="subheader">Em carência</div>
+						<div class="h1 mb-0 text-azure" th:text="${emCarencia}">0</div>
+						<div class="small text-secondary">Dentro do prazo gratuito</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-lg-3">
+				<div class="card card-sm">
+					<div class="card-body">
+						<div class="subheader">Vencidos</div>
+						<div class="h1 mb-0 text-danger" th:text="${vencidos}">0</div>
+						<div class="small text-secondary">Aguardando pagamento</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-lg-3">
+				<div class="card card-sm">
+					<div class="card-body">
+						<div class="subheader">Receita mensal estimada</div>
+						<div class="h1 mb-0 text-success"
+							th:text="${'R$ ' + #numbers.formatDecimal(receitaEstimada != null ? receitaEstimada : 0, 1, 'POINT', 2, 'COMMA')}">
+							R$ 0,00</div>
+						<div class="small text-secondary">Planos pagos vigentes</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row row-cards mt-1">
+			<div class="col-md-4">
+				<div class="card">
+					<div class="card-body text-center">
+						<h3 class="card-title">Planos</h3>
+						<p class="text-secondary">Crie e configure planos, preços e carência.</p>
+						<a th:href="@{/admin/planos}" class="btn btn-primary">Gerenciar planos</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="card">
+					<div class="card-body text-center">
+						<h3 class="card-title">Usuários</h3>
+						<p class="text-secondary">Ative/desative contas e veja os planos de cada um.</p>
+						<a th:href="@{/admin/usuarios}" class="btn btn-primary">Gerenciar usuários</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="card">
+					<div class="card-body text-center">
+						<h3 class="card-title">Plano gratuito</h3>
+						<p class="text-secondary">
+							<span class="h2" th:text="${gratuitos}">0</span> contas em plano sem validade.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

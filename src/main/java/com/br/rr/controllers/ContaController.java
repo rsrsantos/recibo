@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.br.rr.exception.NegocioException;
 import com.br.rr.models.Usuario;
+import com.br.rr.repository.PagamentoRepository;
 import com.br.rr.service.ContaService;
 import com.br.rr.service.PlanoService;
 import com.br.rr.service.UsuarioPlanoService;
@@ -19,12 +20,15 @@ public class ContaController {
 	private final ContaService contaService;
 	private final UsuarioPlanoService usuarioPlanoService;
 	private final PlanoService planoService;
+	private final PagamentoRepository pagamentoRepository;
 
 	public ContaController(ContaService contaService,
-			UsuarioPlanoService usuarioPlanoService, PlanoService planoService) {
+			UsuarioPlanoService usuarioPlanoService, PlanoService planoService,
+			PagamentoRepository pagamentoRepository) {
 		this.contaService = contaService;
 		this.usuarioPlanoService = usuarioPlanoService;
 		this.planoService = planoService;
+		this.pagamentoRepository = pagamentoRepository;
 	}
 
 	@GetMapping("/perfil")
@@ -34,6 +38,8 @@ public class ContaController {
 		model.addAttribute("planoAtivo",
 				usuarioPlanoService.buscarAtivo(usuario).orElse(null));
 		model.addAttribute("planosDisponiveis", planoService.listarAtivos());
+		model.addAttribute("historicoPagamentos",
+				pagamentoRepository.findTop10ByUsuarioOrderByCriadoEmDesc(usuario));
 		return "conta/perfil";
 	}
 

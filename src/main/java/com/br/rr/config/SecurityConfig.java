@@ -7,13 +7,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.br.rr.security.GoogleOAuth2UserService;
+
 @Configuration
 public class SecurityConfig {
 
 	private final PlanoSuccessHandler planoSuccessHandler;
+	private final GoogleOAuth2UserService googleOAuth2UserService;
 
-	public SecurityConfig(PlanoSuccessHandler planoSuccessHandler) {
+	public SecurityConfig(PlanoSuccessHandler planoSuccessHandler,
+			GoogleOAuth2UserService googleOAuth2UserService) {
 		this.planoSuccessHandler = planoSuccessHandler;
+		this.googleOAuth2UserService = googleOAuth2UserService;
 	}
 
 	@Bean
@@ -27,7 +32,8 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers("/login", "/cadastro", "/inicio",
 								"/bootstrap/**", "/vendor/**", "/css/**",
-								"/js/**", "/images/**", "/webjars/**")
+								"/js/**", "/images/**", "/webjars/**",
+								"/pagamento/webhook")
 						.permitAll()
 						.requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
 						.anyRequest().authenticated())
@@ -37,6 +43,10 @@ public class SecurityConfig {
 						.passwordParameter("senha")
 						.successHandler(planoSuccessHandler)
 						.permitAll())
+				.oauth2Login(oauth -> oauth
+						.loginPage("/login")
+						.userInfoEndpoint(u -> u.userService(googleOAuth2UserService))
+						.successHandler(planoSuccessHandler))
 				.logout(logout -> logout
 						.logoutSuccessUrl("/login?logout")
 						.permitAll())

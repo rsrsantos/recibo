@@ -27,6 +27,33 @@ public class UsuarioPlanoServiceImpl implements UsuarioPlanoService {
 	}
 
 	@Override
+	public UsuarioPlano ativarAposPagamento(Usuario usuario, Long planoId) {
+		Plano plano = planoRepository.findById(planoId)
+				.orElseThrow(() -> new RecursoNaoEncontradoException("Plano não encontrado: " + planoId));
+
+		// Pagamento confirmado: sempre 30 dias a partir de hoje,
+		// ou prorroga a partir do dtFim atual se ainda não venceu
+		Optional<UsuarioPlano> ativoOpt = repository
+				.findFirstByUsuarioAndStatusOrderByIdDesc(usuario, "ATIVO");
+
+		ativoOpt.ifPresent(p -> { p.setStatus("CANCELADO"); repository.save(p); });
+
+		UsuarioPlano up = new UsuarioPlano();
+		up.setUsuario(usuario);
+		up.setPlano(plano);
+		up.setDtInicio(LocalDate.now());
+		up.setStatus("ATIVO");
+
+		LocalDate base = ativoOpt
+				.filter(p -> p.getDtFim() != null && p.getDtFim().isAfter(LocalDate.now()))
+				.map(UsuarioPlano::getDtFim)
+				.orElse(LocalDate.now());
+		up.setDtFim(base.plusDays(30));
+
+		return repository.save(up);
+	}
+
+	@Override
 	public UsuarioPlano ativar(Usuario usuario, Long planoId) {
 		Plano plano = planoRepository.findById(planoId)
 				.orElseThrow(() -> new RecursoNaoEncontradoException("Plano não encontrado: " + planoId));

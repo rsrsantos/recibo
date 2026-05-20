@@ -1,0 +1,3 @@
+ALTER TABLE pagamento ALTER COLUMN mp_status_detail TYPE TEXT;
+ALTER TABLE pagamento ADD COLUMN IF NOT EXISTS qr_code TEXT;
+ALTER TABLE pagamento ADD COLUMN IF NOT EXISTS qr_base64 TEXT;

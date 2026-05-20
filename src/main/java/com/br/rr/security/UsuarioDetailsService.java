@@ -26,8 +26,12 @@ public class UsuarioDetailsService implements UserDetailsService {
 		Usuario usuario = usuarioRepository.findByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + email));
 
+		// Usuários Google não têm senha — bloqueia login por formulário para eles
+		String senha = usuario.getSenhaHash() != null
+				? usuario.getSenhaHash() : "{noop}__google_only__";
+
 		return User.withUsername(usuario.getEmail())
-				.password(usuario.getSenhaHash())
+				.password(senha)
 				.disabled(!usuario.isAtivo())
 				.authorities(usuario.getPerfis().stream()
 						.map(p -> new SimpleGrantedAuthority("ROLE_" + p.getNome()))

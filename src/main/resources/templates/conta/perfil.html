@@ -138,13 +138,28 @@
 											<span th:unless="${pl.precoMensal != null and pl.precoMensal.signum() == 0}"
 												class="text-secondary small">/mês</span>
 										</div>
-										<a th:href="@{/planos/ativar(plano=${pl.id})}"
-											th:unless="${planoAtivo != null and planoAtivo.plano.id == pl.id}"
+										<!-- Plano atual: gratuito = apenas indicador; pago = permite renovar -->
+										<th:block th:if="${planoAtivo != null and planoAtivo.plano.id == pl.id}">
+											<button th:if="${pl.precoMensal == null or pl.precoMensal.signum() == 0}"
+												class="btn btn-sm btn-success w-100" disabled>Plano atual</button>
+											<a th:if="${pl.precoMensal != null and pl.precoMensal.signum() > 0}"
+												th:href="@{/pagamento/checkout/{id}(id=${pl.id})}"
+												class="btn btn-sm btn-success w-100">
+												<span>↻ Renovar plano</span>
+											</a>
+										</th:block>
+										<!-- Plano gratuito: ativa direto -->
+										<a th:if="${!(planoAtivo != null and planoAtivo.plano.id == pl.id) and (pl.precoMensal == null or pl.precoMensal.signum() == 0)}"
+											th:href="@{/planos/ativar(plano=${pl.id})}"
 											class="btn btn-sm btn-outline-primary w-100">
 											<span th:text="${planoAtivo != null} ? 'Trocar para este' : 'Selecionar'">Selecionar</span>
 										</a>
-										<button th:if="${planoAtivo != null and planoAtivo.plano.id == pl.id}"
-											class="btn btn-sm btn-success w-100" disabled>Plano atual</button>
+										<!-- Plano pago: vai para checkout -->
+										<a th:if="${!(planoAtivo != null and planoAtivo.plano.id == pl.id) and pl.precoMensal != null and pl.precoMensal.signum() > 0}"
+											th:href="@{/pagamento/checkout/{id}(id=${pl.id})}"
+											class="btn btn-sm btn-primary w-100">
+											<span th:text="${planoAtivo != null} ? 'Assinar este plano' : 'Assinar agora'">Assinar</span>
+										</a>
 									</div>
 								</div>
 							</div>
@@ -152,6 +167,59 @@
 								<p class="text-secondary">Nenhum plano disponível no momento.</p>
 							</div>
 						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Histórico de pagamentos -->
+		<div class="row mt-4" th:if="${historicoPagamentos != null and !#lists.isEmpty(historicoPagamentos)}">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Histórico de pagamentos</h3>
+					</div>
+					<div class="table-responsive">
+						<table class="table table-vcenter card-table">
+							<thead>
+								<tr>
+									<th>Data</th>
+									<th>Plano</th>
+									<th>Método</th>
+									<th>Valor</th>
+									<th>Status</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="pag : ${historicoPagamentos}">
+									<td th:text="${#temporals.format(pag.criadoEm, 'dd/MM/yyyy HH:mm')}"></td>
+									<td th:text="${pag.plano.nome}"></td>
+									<td>
+										<span th:switch="${pag.metodo}">
+											<span th:case="'pix'">PIX</span>
+											<span th:case="'credit_card'">Cartão de Crédito</span>
+											<span th:case="'debit_card'">Cartão de Débito</span>
+											<span th:case="*" th:text="${pag.metodo}"></span>
+										</span>
+									</td>
+									<td th:text="${'R$ ' + #numbers.formatDecimal(pag.valor, 1, 'POINT', 2, 'COMMA')}"></td>
+									<td>
+										<span th:switch="${pag.mpStatus}">
+											<span th:case="'approved'" class="badge bg-success">Aprovado</span>
+											<span th:case="'pending'" class="badge bg-warning text-dark">Pendente</span>
+											<span th:case="'rejected'" class="badge bg-danger">Rejeitado</span>
+											<span th:case="'expired'" class="badge bg-secondary">Expirado</span>
+											<span th:case="*" class="badge bg-secondary" th:text="${pag.mpStatus}"></span>
+										</span>
+									</td>
+									<td>
+										<a th:href="@{/pagamento/comprovante/{id}(id=${pag.id})}"
+											class="btn btn-sm btn-outline-secondary">Comprovante</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>

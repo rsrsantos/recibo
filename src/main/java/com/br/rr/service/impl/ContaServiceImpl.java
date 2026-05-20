@@ -2,6 +2,7 @@ package com.br.rr.service.impl;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import com.br.rr.models.Usuario;
 import com.br.rr.repository.PerfilRepository;
 import com.br.rr.repository.PessoaRepository;
 import com.br.rr.repository.UsuarioRepository;
+import com.br.rr.security.GoogleUsuarioService;
 import com.br.rr.service.ContaService;
 
 @Service
@@ -25,19 +27,33 @@ public class ContaServiceImpl implements ContaService {
 	private final PasswordEncoder passwordEncoder;
 	private final PessoaRepository pessoaRepository;
 	private final PerfilRepository perfilRepository;
+	private final GoogleUsuarioService googleUsuarioService;
 
 	public ContaServiceImpl(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder,
-			PessoaRepository pessoaRepository, PerfilRepository perfilRepository) {
+			PessoaRepository pessoaRepository, PerfilRepository perfilRepository,
+			GoogleUsuarioService googleUsuarioService) {
 		this.usuarioRepository = usuarioRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.pessoaRepository = pessoaRepository;
 		this.perfilRepository = perfilRepository;
+		this.googleUsuarioService = googleUsuarioService;
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public Usuario usuarioLogado() {
-		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		var auth = SecurityContextHolder.getContext().getAuthentication();
+
+		if (auth instanceof OAuth2AuthenticationToken oauth2) {
+			String googleId = oauth2.getPrincipal().getAttribute("sub");
+			String email    = oauth2.getPrincipal().getAttribute("email");
+			return usuarioRepository.findByGoogleId(googleId)
+					.or(() -> usuarioRepository.findByEmail(email))
+					.orElseGet(() -> googleUsuarioService.buscarOuCriar(googleId, email,
+							(String) oauth2.getPrincipal().getAttributes().getOrDefault("name", email)));
+		}
+
+		String email = auth.getName();
 		return usuarioRepository.findByEmail(email)
 				.orElseThrow(() -> new RecursoNaoEncontradoException("Usuário logado não encontrado."));
 	}

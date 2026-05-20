@@ -2,6 +2,7 @@ package com.br.rr.config;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -28,7 +29,7 @@ public class PaywallInterceptor implements HandlerInterceptor {
 	}
 
 	private static final String[] LIBERADOS = {
-			"/perfil", "/planos", "/logout", "/login", "/cadastro", "/inicio",
+			"/perfil", "/planos", "/pagamento", "/logout", "/login", "/cadastro", "/inicio",
 			"/css/", "/js/", "/vendor/", "/bootstrap/", "/images/", "/webjars/",
 			"/error", "/favicon"
 	};
@@ -53,7 +54,16 @@ public class PaywallInterceptor implements HandlerInterceptor {
 			}
 		}
 
-		Usuario usuario = usuarioRepository.findByEmail(auth.getName()).orElse(null);
+		Usuario usuario;
+		if (auth instanceof OAuth2AuthenticationToken oauth2) {
+			String googleId = oauth2.getPrincipal().getAttribute("sub");
+			String email    = oauth2.getPrincipal().getAttribute("email");
+			usuario = (googleId != null ? usuarioRepository.findByGoogleId(googleId) : java.util.Optional.<Usuario>empty())
+					.or(() -> email != null ? usuarioRepository.findByEmail(email) : java.util.Optional.empty())
+					.orElse(null);
+		} else {
+			usuario = usuarioRepository.findByEmail(auth.getName()).orElse(null);
+		}
 		if (usuario == null || !guard.bloqueado(usuario)) {
 			return true;
 		}

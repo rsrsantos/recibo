@@ -32,8 +32,12 @@ public class Usuario {
 	@Column(nullable = false, unique = true, length = 120)
 	private String email;
 
-	@Column(name = "senha_hash", nullable = false, length = 100)
+	@Column(name = "senha_hash", length = 100)
 	private String senhaHash;
+
+	/** ID retornado pelo Google (sub). Nulo para usuários com login por senha. */
+	@Column(name = "google_id", unique = true)
+	private String googleId;
 
 	private boolean ativo = true;
 

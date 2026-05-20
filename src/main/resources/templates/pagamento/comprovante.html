@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/base}">
+
+<head>
+	<title layout:fragment="title">Comprovante de Pagamento</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<th:block th:replace="~{fragments/ui :: pageHeader('Pagamento', 'Comprovante')}"></th:block>
+
+		<div class="row justify-content-center">
+			<div class="col-lg-6">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Comprovante de Pagamento</h3>
+						<div class="card-options">
+							<span th:switch="${pag.mpStatus}">
+								<span th:case="'approved'" class="badge bg-success">Aprovado</span>
+								<span th:case="'pending'" class="badge bg-warning text-dark">Pendente</span>
+								<span th:case="'rejected'" class="badge bg-danger">Rejeitado</span>
+								<span th:case="'expired'" class="badge bg-secondary">Expirado</span>
+								<span th:case="*" class="badge bg-secondary" th:text="${pag.mpStatus}"></span>
+							</span>
+						</div>
+					</div>
+					<div class="card-body">
+
+						<div th:if="${pag.mpStatus == 'approved'}" class="alert alert-success d-flex align-items-center mb-4">
+							<svg xmlns="http://www.w3.org/2000/svg" class="me-2 flex-shrink-0" width="24" height="24"
+								viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+							</svg>
+							<div>Pagamento confirmado. Seu plano está ativo.</div>
+						</div>
+
+						<div th:if="${pag.mpStatus == 'pending'}" class="alert alert-warning mb-4">
+							Pagamento em análise. Você receberá a confirmação em breve.
+						</div>
+
+						<div th:if="${pag.mpStatus == 'rejected'}" class="alert alert-danger mb-4">
+							Pagamento recusado. Tente novamente com outro método de pagamento.
+						</div>
+
+						<div class="datagrid">
+							<div class="datagrid-item">
+								<div class="datagrid-title">ID da transação</div>
+								<div class="datagrid-content">
+									<code th:text="${pag.mpPaymentId ?: '—'}"></code>
+								</div>
+							</div>
+							<div class="datagrid-item">
+								<div class="datagrid-title">Data</div>
+								<div class="datagrid-content"
+									th:text="${#temporals.format(pag.criadoEm, 'dd/MM/yyyy HH:mm')}"></div>
+							</div>
+							<div class="datagrid-item">
+								<div class="datagrid-title">Plano</div>
+								<div class="datagrid-content" th:text="${pag.plano.nome}"></div>
+							</div>
+							<div class="datagrid-item">
+								<div class="datagrid-title">Método</div>
+								<div class="datagrid-content">
+									<span th:switch="${pag.metodo}">
+										<span th:case="'pix'">PIX</span>
+										<span th:case="'credit_card'">Cartão de Crédito</span>
+										<span th:case="'debit_card'">Cartão de Débito</span>
+										<span th:case="*" th:text="${pag.metodo}"></span>
+									</span>
+								</div>
+							</div>
+							<div class="datagrid-item">
+								<div class="datagrid-title">Valor</div>
+								<div class="datagrid-content fw-bold"
+									th:text="${'R$ ' + #numbers.formatDecimal(pag.valor, 1, 'POINT', 2, 'COMMA')}"></div>
+							</div>
+							<div class="datagrid-item" th:if="${pag.mpStatusDetail != null}">
+								<div class="datagrid-title">Detalhe</div>
+								<div class="datagrid-content text-secondary small" th:text="${pag.mpStatusDetail}"></div>
+							</div>
+						</div>
+
+					</div>
+					<div class="card-footer d-flex justify-content-between">
+						<a th:href="@{/conta/perfil#planos}" class="btn btn-outline-secondary">
+							← Voltar ao perfil
+						</a>
+						<button onclick="window.print()" class="btn btn-primary">
+							Imprimir comprovante
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</body>
+
+</html>

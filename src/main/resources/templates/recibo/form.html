@@ -16,7 +16,15 @@
 			id="formRecibo"
 			th:attr="data-url-buscar=@{/pessoas/buscar},data-url-rapido=@{/pessoas/rapido},data-proximo=${proximoNumero}">
 
+			<input type="hidden" th:field="*{modelo}">
+
 			<div class="card">
+				<div class="card-status-start bg-primary"></div>
+				<div class="card-header py-2">
+					<span class="text-secondary me-2">Modelo:</span>
+					<strong th:text="${modelo != null ? modelo.descricao : 'Recibo Padrão'}">Recibo Padrão</strong>
+					<a th:href="@{/recibos/novo}" class="ms-auto small">Trocar modelo</a>
+				</div>
 				<div class="card-body">
 					<div class="row">
 						<!-- Cliente: busca dinâmica + cadastro rápido -->
@@ -80,10 +88,8 @@
 			</div>
 
 			<div class="text-end mt-3">
-				<a th:href="@{/recibos}" class="btn btn-link">Cancelar</a>
-				<button type="button" class="btn btn-outline-secondary" disabled
-					title="Disponível em breve (Jasper)">Imprimir</button>
-				<button type="submit" class="btn btn-primary">Salvar</button>
+				<a th:href="@{/recibos/novo}" class="btn btn-link">Cancelar</a>
+				<button type="submit" class="btn btn-primary">Salvar recibo</button>
 			</div>
 		</form>
 

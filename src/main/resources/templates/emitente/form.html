@@ -12,7 +12,8 @@
 
 		<th:block th:replace="~{fragments/ui :: pageHeader('Configurações', 'Dados do Emitente')}"></th:block>
 
-		<form method="post" th:action="@{/emitente}" th:object="${emitenteForm}" id="formEmitente">
+		<form method="post" th:action="@{/emitente}" th:object="${emitenteForm}"
+			enctype="multipart/form-data" id="formEmitente">
 
 			<div class="card mb-3">
 				<div class="card-header">
@@ -109,6 +110,39 @@
 				</div>
 			</div>
 
+			<!-- Logo -->
+			<div class="card mb-3">
+				<div class="card-header">
+					<h3 class="card-title">Logo do emitente</h3>
+				</div>
+				<div class="card-body">
+					<div class="row align-items-center g-3">
+						<div class="col-auto" id="logoPreviewWrap" th:if="${temLogo}">
+							<img th:src="@{/emitente/logo}" id="logoAtual"
+								style="max-height:80px;max-width:200px;border-radius:6px;border:1px solid #dee2e6;" alt="Logo atual">
+						</div>
+						<div class="col-auto" id="logoPreviewNewWrap" style="display:none">
+							<img id="logoPreviewNew"
+								style="max-height:80px;max-width:200px;border-radius:6px;border:1px solid #dee2e6;" alt="Pré-visualização">
+						</div>
+						<div class="col">
+							<label class="form-label mb-1">
+								Imagem (PNG ou JPEG, máx. 500 KB)
+							</label>
+							<input type="file" class="form-control" name="logo" id="logoInput"
+								accept="image/png,image/jpeg">
+							<div class="form-text">Aparecerá no cabeçalho do recibo em PDF.</div>
+						</div>
+						<div class="col-auto" th:if="${temLogo}">
+							<label class="form-check form-switch mt-1">
+								<input class="form-check-input" type="checkbox" name="removerLogo" id="chkRemoverLogo">
+								<span class="form-check-label text-danger">Remover logo</span>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="text-end">
 				<button type="submit" class="btn btn-primary">Salvar dados</button>
 			</div>
@@ -142,6 +176,21 @@
 			if (sel) {
 				sel.addEventListener('change', aplicar);
 				aplicar();
+			}
+
+			// Pré-visualização de logo
+			const logoInput = document.getElementById('logoInput');
+			const previewWrap = document.getElementById('logoPreviewNewWrap');
+			const previewImg = document.getElementById('logoPreviewNew');
+			if (logoInput) {
+				logoInput.addEventListener('change', function () {
+					const file = logoInput.files && logoInput.files[0];
+					if (file && previewImg && previewWrap) {
+						const reader = new FileReader();
+						reader.onload = e => { previewImg.src = e.target.result; previewWrap.style.display = ''; };
+						reader.readAsDataURL(file);
+					}
+				});
 			}
 
 			// Preenchimento automático de endereço via CEP

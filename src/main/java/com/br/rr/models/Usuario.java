@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +41,16 @@ public class Usuario {
 	private String googleId;
 
 	private boolean ativo = true;
+
+	@Column(name = "email_confirmado", nullable = false)
+	private boolean emailConfirmado = false;
+
+	/** Token de ativação gerado no cadastro. Nulo após confirmação. */
+	@Column(name = "token_confirmacao", unique = true, length = 64)
+	private String tokenConfirmacao;
+
+	@Column(name = "token_expira_em")
+	private LocalDateTime tokenExpiraEm;
 
 	@CreationTimestamp
 	@Column(name = "criado_em", nullable = false, updatable = false)

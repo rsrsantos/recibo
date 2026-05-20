@@ -1,5 +1,6 @@
 package com.br.rr.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -18,10 +19,18 @@ public class GlobalModelAttributes {
 	private final UsuarioRepository usuarioRepository;
 	private final AssinaturaGuard assinaturaGuard;
 
+	@Value("${app.whatsapp:}")
+	private String whatsapp;
+
 	public GlobalModelAttributes(UsuarioRepository usuarioRepository,
 			AssinaturaGuard assinaturaGuard) {
 		this.usuarioRepository = usuarioRepository;
 		this.assinaturaGuard = assinaturaGuard;
+	}
+
+	@ModelAttribute("whatsapp")
+	public String whatsapp() {
+		return (whatsapp != null && !whatsapp.isBlank() && !whatsapp.startsWith("55SEU")) ? whatsapp : null;
 	}
 
 	@ModelAttribute("currentUri")

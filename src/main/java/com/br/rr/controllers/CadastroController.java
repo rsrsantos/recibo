@@ -1,10 +1,5 @@
 package com.br.rr.controllers;
 
-import java.util.Collection;
-
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,11 +8,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.br.rr.dto.CadastroForm;
 import com.br.rr.exception.NegocioException;
-import com.br.rr.models.Usuario;
-import com.br.rr.security.UsuarioDetailsService;
 import com.br.rr.service.ContaService;
 
 import jakarta.validation.Valid;
@@ -27,11 +21,9 @@ import jakarta.validation.Valid;
 public class CadastroController {
 
 	private final ContaService contaService;
-	private final UsuarioDetailsService userDetailsService;
 
-	public CadastroController(ContaService contaService, UsuarioDetailsService userDetailsService) {
+	public CadastroController(ContaService contaService) {
 		this.contaService = contaService;
-		this.userDetailsService = userDetailsService;
 	}
 
 	@GetMapping
@@ -44,29 +36,24 @@ public class CadastroController {
 
 	@PostMapping
 	public String cadastrar(@Valid @ModelAttribute CadastroForm cadastroForm,
-			BindingResult result, Model model) {
+			BindingResult result, Model model, RedirectAttributes ra) {
 		if (result.hasErrors()) {
 			return "cadastro";
 		}
 		try {
-			Usuario usuario = contaService.cadastrar(cadastroForm);
-			autoLogin(usuario.getEmail());
-
-			if (cadastroForm.getPlanoId() != null) {
-				return "redirect:/planos/ativar?plano=" + cadastroForm.getPlanoId();
-			}
-			return "redirect:/";
+			contaService.cadastrar(cadastroForm);
+			return "redirect:/cadastro/aguardando-confirmacao?email=" +
+					java.net.URLEncoder.encode(cadastroForm.getEmail(), java.nio.charset.StandardCharsets.UTF_8);
 		} catch (NegocioException ex) {
 			model.addAttribute("erro", ex.getMessage());
 			return "cadastro";
 		}
 	}
 
-	private void autoLogin(String email) {
-		UserDetails details = userDetailsService.loadUserByUsername(email);
-		UsernamePasswordAuthenticationToken auth =
-				new UsernamePasswordAuthenticationToken(details, null, details.getAuthorities());
-		SecurityContextHolder.getContext().setAuthentication(auth);
+	@GetMapping("/aguardando-confirmacao")
+	public String aguardando(@RequestParam(required = false) String email, Model model) {
+		model.addAttribute("email", email);
+		return "cadastro/aguardando-confirmacao";
 	}
 
 }

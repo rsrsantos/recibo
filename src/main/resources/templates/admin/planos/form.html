@@ -90,6 +90,29 @@
 						</div>
 					</div>
 
+					<hr class="my-3">
+
+					<div class="mb-3">
+						<label class="form-label">Modelos de recibo liberados</label>
+						<p class="text-secondary small mb-2">
+							Marque os modelos que este plano libera.
+							<strong>Nenhum marcado = todos os modelos liberados.</strong>
+						</p>
+						<div class="row">
+							<div class="col-md-6 col-lg-4 mb-2" th:each="m : ${modelos}">
+								<label class="form-check">
+									<input class="form-check-input" type="checkbox"
+										th:field="*{modelosPermitidos}" th:value="${m}">
+									<span class="form-check-label">
+										<span th:text="${m.descricao}">Modelo</span>
+										<span th:unless="${m.implementado}"
+											class="badge bg-secondary-lt ms-1">em breve</span>
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+
 					<div class="text-end">
 						<a th:href="@{/admin/planos}" class="btn btn-link">Cancelar</a>
 						<button type="submit" class="btn btn-primary">Salvar</button>

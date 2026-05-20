@@ -56,6 +56,16 @@
 						<div class="alert alert-danger" th:if="${param.error}">
 							Usuário ou senha inválidos.
 						</div>
+						<div class="alert alert-warning d-flex align-items-start gap-2" th:if="${param.naoConfirmado}">
+							<svg xmlns="http://www.w3.org/2000/svg" class="icon flex-shrink-0 mt-1" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+							<div>
+								Confirme seu e-mail antes de entrar.
+								<a th:href="@{/cadastro/aguardando-confirmacao}" class="alert-link">Reenviar confirmação</a>
+							</div>
+						</div>
+						<div class="alert alert-success" th:if="${param.confirmado}">
+							E-mail confirmado! Faça login para continuar.
+						</div>
 						<div class="alert alert-success" th:if="${param.logout}">
 							Você saiu do sistema com segurança.
 						</div>
@@ -110,6 +120,7 @@
 		</div>
 
 	</div>
+	<th:block th:replace="~{fragments/whatsapp :: btn(${whatsapp})}"></th:block>
 	<script th:src="@{/vendor/tabler/js/tabler.min.js}"></script>
 </body>
 

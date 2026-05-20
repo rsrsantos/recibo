@@ -1,6 +1,10 @@
 package com.br.rr.dto;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.br.rr.models.ModeloRecibo;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,5 +41,8 @@ public class PlanoForm {
 
 	@PositiveOrZero(message = "A carência não pode ser negativa")
 	private Integer carenciaDias = 30;
+
+	/** Vazio = todos os modelos liberados. */
+	private Set<ModeloRecibo> modelosPermitidos = new HashSet<>();
 
 }

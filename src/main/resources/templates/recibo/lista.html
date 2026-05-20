@@ -19,6 +19,28 @@
 					<a th:href="@{/recibos/novo}" class="btn btn-primary">Novo recibo</a>
 				</div>
 			</div>
+
+			<!-- Modal: número de vias para impressão -->
+			<div class="modal modal-blur fade" id="modalVias" tabindex="-1">
+				<div class="modal-dialog modal-sm modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Imprimir recibo</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+						</div>
+						<div class="modal-body">
+							<label class="form-label">Número de vias</label>
+							<input type="number" class="form-control" id="inputVias"
+								value="1" min="1" max="10">
+							<small class="text-secondary">Cada via é impressa numa página (máx. 10).</small>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+							<button type="button" class="btn btn-primary" id="btnGerarPdf">Gerar PDF</button>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="table-responsive">
 				<table class="table table-vcenter card-table">
 					<thead>
@@ -39,6 +61,19 @@
 								th:text="${'R$ ' + #numbers.formatDecimal(r.vlrTotal != null ? r.vlrTotal : 0, 1, 'POINT', 2, 'COMMA')}"></td>
 							<td>
 								<div class="d-flex gap-2">
+									<button type="button"
+										class="btn btn-icon btn-sm btn-outline-primary btn-imprimir"
+										title="Imprimir PDF" th:attr="data-recibo-id=${r.id}">
+										<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+											viewBox="0 0 24 24" fill="none" stroke="currentColor"
+											stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+											<polyline points="14 2 14 8 20 8"/>
+											<line x1="16" y1="13" x2="8" y2="13"/>
+											<line x1="16" y1="17" x2="8" y2="17"/>
+											<polyline points="10 9 9 9 8 9"/>
+										</svg>
+									</button>
 									<a th:href="@{|/recibos/${r.id}/excluir|}"
 										class="btn btn-icon btn-sm btn-danger" title="Excluir"
 										onclick="return confirm('Excluir este recibo?')">
@@ -63,6 +98,35 @@
 			<th:block th:replace="~{fragments/ui :: pagination(${recibos}, '/recibos')}"></th:block>
 		</div>
 	</div>
+
+	<th:block layout:fragment="scripts">
+		<script th:inline="javascript">
+		(function () {
+			const baseUrl = /*[[@{/recibos}]]*/ '/recibos';
+			const modalEl = document.getElementById('modalVias');
+			const modal = new bootstrap.Modal(modalEl);
+			const inputVias = document.getElementById('inputVias');
+			let reciboId = null;
+
+			document.querySelectorAll('.btn-imprimir').forEach(function (btn) {
+				btn.addEventListener('click', function () {
+					reciboId = btn.getAttribute('data-recibo-id');
+					inputVias.value = 1;
+					modal.show();
+				});
+			});
+
+			document.getElementById('btnGerarPdf').addEventListener('click', function () {
+				if (!reciboId) return;
+				let vias = parseInt(inputVias.value, 10);
+				if (isNaN(vias) || vias < 1) vias = 1;
+				if (vias > 10) vias = 10;
+				window.open(baseUrl + '/' + reciboId + '/pdf?vias=' + vias, '_blank');
+				modal.hide();
+			});
+		})();
+		</script>
+	</th:block>
 </body>
 
 </html>

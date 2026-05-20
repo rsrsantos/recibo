@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.br.rr.dto.PlanoForm;
+import com.br.rr.models.ModeloRecibo;
 import com.br.rr.service.PlanoService;
 
 import jakarta.validation.Valid;
@@ -38,19 +39,22 @@ public class PlanoAdminController {
 	@GetMapping("/novo")
 	public String form(Model model) {
 		model.addAttribute("planoForm", new PlanoForm());
+		model.addAttribute("modelos", ModeloRecibo.values());
 		return "admin/planos/form";
 	}
 
 	@GetMapping("/{id}/editar")
 	public String editar(@PathVariable Long id, Model model) {
 		model.addAttribute("planoForm", service.carregarForm(id));
+		model.addAttribute("modelos", ModeloRecibo.values());
 		return "admin/planos/form";
 	}
 
 	@PostMapping
 	public String salvar(@Valid @ModelAttribute("planoForm") PlanoForm planoForm,
-			BindingResult result, RedirectAttributes attributes) {
+			BindingResult result, Model model, RedirectAttributes attributes) {
 		if (result.hasErrors()) {
+			model.addAttribute("modelos", ModeloRecibo.values());
 			return "admin/planos/form";
 		}
 		service.salvarForm(planoForm);

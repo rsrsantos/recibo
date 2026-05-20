@@ -14,6 +14,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
 	Optional<Usuario> findByGoogleId(String googleId);
 
+	Optional<Usuario> findByTokenConfirmacao(String token);
+
 	@Query("select count(u) from Usuario u join u.perfis p where p.id = :perfilId")
 	long contarPorPerfil(@Param("perfilId") Long perfilId);
 

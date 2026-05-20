@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="recibo" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30" uuid="abd3b80f-58ec-46a1-b667-620ecb03228a">
+	<style name="Default" isDefault="true" forecolor="#000000" fontName="DejaVu Sans" fontSize="9"/>
+	<style name="Big" style="Default" fontSize="22" isBold="true"/>
+	<style name="Lbl" style="Default" fontSize="10" isBold="true"/>
+	<style name="Val" style="Default" fontSize="10"/>
+	<style name="ValBold" style="Default" fontSize="10" isBold="true"/>
+	<style name="BoxText" style="Default" fontSize="11"/>
+	<style name="Small" style="Default" forecolor="#666666" fontSize="7"/>
+	<parameter name="N_RECIBO" class="java.lang.String"/>
+	<parameter name="DATA_GERACAO" class="java.lang.String"/>
+	<parameter name="REFERENTE" class="java.lang.String"/>
+	<parameter name="VLR_TOTAL" class="java.lang.String"/>
+	<parameter name="VALOR_EXTENSO" class="java.lang.String"/>
+	<parameter name="EMI_NOME" class="java.lang.String"/>
+	<parameter name="EMI_DOC" class="java.lang.String"/>
+	<parameter name="DEST_NOME" class="java.lang.String"/>
+	<title>
+		<band height="387" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Transparent" x="5" y="5" width="525" height="366" uuid="f2b8b4f7-e6c3-4a0c-9569-8d92f7dfcbef"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="0" width="535" height="382" uuid="3cee7ffa-84f7-42b4-a505-137e3a978648"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="14" y="14" width="507" height="72" uuid="de1672b2-a53f-4348-a352-5ff7547f68c7"/>
+				<graphicElement>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement style="Big" x="34" y="30" width="120" height="40" uuid="ef1a9e30-11b2-4754-b0f6-75a5c5ddce40"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Recibo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Big" x="162" y="30" width="40" height="40" uuid="5fd3521c-5c77-4851-9a7a-32ef8bbdcae8"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[N°]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="BoxText" x="204" y="36" width="66" height="28" uuid="1547e887-078e-4bf0-9a2d-492276828bae"/>
+				<box leftPadding="4" rightPadding="4">
+					<pen lineWidth="0.75" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{N_RECIBO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Big" x="298" y="30" width="80" height="40" uuid="8e9d47b2-61b7-4186-b2f2-1aa67d0eab2f"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="BoxText" x="380" y="36" width="125" height="28" uuid="20ddd893-72f7-4a91-b058-f5a6280e9989"/>
+				<box leftPadding="8" rightPadding="6">
+					<pen lineWidth="0.75" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{VLR_TOTAL}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Lbl" x="20" y="104" width="130" height="16" uuid="ea8ba246-2c60-4f56-9e46-7503c217e732"/>
+				<text><![CDATA[Recebi(emos) de:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Val" x="150" y="104" width="365" height="16" uuid="f3b391b5-4afa-464c-ad13-885a20377d50"/>
+				<textFieldExpression><![CDATA[$P{DEST_NOME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Lbl" x="20" y="134" width="495" height="14" uuid="0a85a2a4-80f3-4758-88dd-2577f90dff9b"/>
+				<text><![CDATA[A quantia de:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement style="Val" x="20" y="150" width="495" height="24" uuid="32e2d23d-a0e2-4026-96d4-c8f4389355d0"/>
+				<box topPadding="4" leftPadding="8" bottomPadding="4" rightPadding="8">
+					<pen lineWidth="0.75" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{VALOR_EXTENSO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Lbl" x="20" y="186" width="495" height="14" uuid="446d6f94-42d4-49e4-806d-0dabe22992d7"/>
+				<text><![CDATA[Correspondente a:]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement style="Val" x="20" y="202" width="495" height="24" uuid="247dea50-f7ef-4f7e-983d-3a0ec8fa4226"/>
+				<box topPadding="4" leftPadding="8" bottomPadding="4" rightPadding="8">
+					<pen lineWidth="0.75" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{REFERENTE}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="20" y="248" width="495" height="1" forecolor="#000000" uuid="1d08ae27-9c0d-4ac0-8d72-55013cbdc423"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Val" x="20" y="252" width="495" height="16" uuid="8b7696e0-dc37-44c4-981b-53b0a2ee525d"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{DATA_GERACAO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Lbl" x="20" y="284" width="75" height="16" uuid="f063d3d4-7f88-4e5a-b19d-dfcd7fc551d9"/>
+				<text><![CDATA[Emitente:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="ValBold" x="95" y="284" width="420" height="16" uuid="0be0a946-99a3-4863-8b26-18835664fd81"/>
+				<textFieldExpression><![CDATA[$P{EMI_NOME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Lbl" x="20" y="308" width="80" height="16" uuid="60c67879-c586-4401-b5ac-52d16909b66b"/>
+				<text><![CDATA[CPF/CNPJ:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Val" x="100" y="308" width="300" height="16" uuid="0190e95d-df06-4837-93bb-45d0a8054eae"/>
+				<textFieldExpression><![CDATA[$P{EMI_DOC}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="305" y="344" width="210" height="1" forecolor="#000000" uuid="703fb676-3ee6-4b4d-978e-5b9edfff59dc"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement style="Val" x="305" y="348" width="210" height="14" uuid="86dac9b5-2f3d-4f45-9374-0868649d980e"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{EMI_NOME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="Small" x="14" y="371" width="507" height="10" uuid="4d43039e-31a7-4318-9650-472c1cc2b96c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Documento gerado pelo Santo Recibo]]></text>
+			</staticText>
+		</band>
+	</title>
+</jasperReport>

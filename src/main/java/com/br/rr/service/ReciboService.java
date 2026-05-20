@@ -28,4 +28,11 @@ public interface ReciboService {
 	/** Próximo número sugerido (sequencial por usuário). */
 	long proximoNumero();
 
+	/**
+	 * Gera o PDF do recibo em bytes. Lança RecursoNaoEncontradoException se não pertencer ao usuário.
+	 *
+	 * @param vias quantas vias (cópias) imprimir; cada via é uma página.
+	 */
+	byte[] gerarPdf(Long id, int vias);
+
 }

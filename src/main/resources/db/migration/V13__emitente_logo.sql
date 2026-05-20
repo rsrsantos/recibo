@@ -1,0 +1,3 @@
+ALTER TABLE emitente
+    ADD COLUMN IF NOT EXISTS logo      BYTEA,
+    ADD COLUMN IF NOT EXISTS logo_tipo VARCHAR(20);

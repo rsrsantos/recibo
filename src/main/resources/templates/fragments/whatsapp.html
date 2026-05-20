@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="btn(numero)">
+	<a th:if="${numero != null}"
+	   th:href="'https://wa.me/' + ${numero} + '?text=Ol%C3%A1%2C+preciso+de+ajuda+com+o+Santo+Recibo'"
+	   target="_blank" rel="noopener noreferrer"
+	   title="Falar no WhatsApp"
+	   style="position:fixed;bottom:24px;right:24px;z-index:9999;
+	          width:52px;height:52px;border-radius:50%;
+	          background:#25d366;display:flex;align-items:center;justify-content:center;
+	          box-shadow:0 4px 16px rgba(37,211,102,.45);
+	          text-decoration:none;transition:transform .2s,box-shadow .2s;"
+	   onmouseover="this.style.transform='scale(1.1)';this.style.boxShadow='0 6px 20px rgba(37,211,102,.6)'"
+	   onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 16px rgba(37,211,102,.45)'">
+		<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#fff">
+			<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+			<path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.107 1.514 5.84L.057 23.428a.5.5 0 0 0 .609.61l5.652-1.481A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.938a9.932 9.932 0 0 1-5.035-1.367l-.36-.214-3.742.981.999-3.648-.235-.375A9.908 9.908 0 0 1 2.062 12C2.062 6.508 6.508 2.062 12 2.062S21.938 6.508 21.938 12 17.492 21.938 12 21.938z"/>
+		</svg>
+	</a>
+</th:block>
+</body>
+</html>

@@ -1,5 +1,7 @@
 package com.br.rr.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.br.rr.models.TipoPessoa;
 
 import jakarta.validation.constraints.NotBlank;
@@ -28,5 +30,8 @@ public class EmitenteForm {
 	private String bairro;
 	private String cidade;
 	private String estado;
+
+	private MultipartFile logo;
+	private boolean removerLogo;
 
 }

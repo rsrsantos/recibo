@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Auréola -->
+  <ellipse cx="32" cy="10" rx="11" ry="4" stroke="#F59E0B" stroke-width="2.5" fill="none" opacity=".9"/>
+  <!-- Corpo do recibo -->
+  <rect x="13" y="14" width="38" height="44" rx="4" fill="#206bc4"/>
+  <!-- Borda clara interna -->
+  <rect x="13" y="14" width="38" height="44" rx="4" stroke="#1a56a8" stroke-width="1"/>
+  <!-- Recorte serrilhado inferior (zigzag) -->
+  <path d="M13 52 L16 56 L19 52 L22 56 L25 52 L28 56 L31 52 L34 56 L37 52 L40 56 L43 52 L46 56 L49 52 L51 58 L13 58 Z"
+        fill="#f4f6fb"/>
+  <!-- Linhas do recibo -->
+  <rect x="20" y="22" width="24" height="2.5" rx="1.25" fill="white" opacity=".9"/>
+  <rect x="20" y="28" width="18" height="2.5" rx="1.25" fill="white" opacity=".6"/>
+  <rect x="20" y="34" width="20" height="2.5" rx="1.25" fill="white" opacity=".6"/>
+  <!-- Checkmark de confirmação -->
+  <circle cx="39" cy="43" r="7" fill="#2fb344"/>
+  <path d="M35.5 43 L38 45.5 L42.5 40.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

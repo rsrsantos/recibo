@@ -1,44 +1,28 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/base}">
-
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Acesso negado</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title>Acesso negado — Recibos</title>
+	<link rel="stylesheet" th:href="@{/vendor/tabler/css/tabler.min.css}">
 </head>
-
-<div layout:fragment="content">
-	<div class="page-body">
-		<div class="container-xl d-flex align-items-center justify-content-center" style="min-height:60vh">
-			<div class="text-center">
-				<div class="mb-3">
-					<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-lock"
-						width="80" height="80" viewBox="0 0 24 24" fill="none"
-						stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-						style="color:var(--tblr-muted)">
-						<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-						<rect x="5" y="11" width="14" height="10" rx="2"/>
-						<circle cx="12" cy="16" r="1"/>
-						<path d="M8 11v-4a4 4 0 0 1 8 0v4"/>
-					</svg>
-				</div>
-				<h1 class="display-4 fw-bold text-muted">403</h1>
-				<p class="fs-4 fw-semibold mb-2">Acesso negado</p>
-				<p class="text-muted mb-4">Você não tem permissão para acessar este recurso.</p>
-				<a th:href="@{/}" class="btn btn-primary">
-					<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-						viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-						stroke-linecap="round" stroke-linejoin="round">
-						<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-						<path d="M5 12l14 0"/>
-						<path d="M5 12l6 6"/>
-						<path d="M5 12l6 -6"/>
-					</svg>
-					Voltar ao início
-				</a>
-			</div>
-		</div>
+<body class="antialiased">
+<div class="page page-center">
+	<div class="container container-tight py-4 text-center">
+		<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-lg text-muted mb-3"
+			width="64" height="64" viewBox="0 0 24 24" fill="none"
+			stroke="currentColor" stroke-width="1.5">
+			<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+			<rect x="5" y="11" width="14" height="10" rx="2"/>
+			<circle cx="12" cy="16" r="1"/>
+			<path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+		</svg>
+		<h1 class="display-4 fw-bold text-muted">403</h1>
+		<p class="fs-4 fw-semibold mb-2">Acesso negado</p>
+		<p class="text-muted mb-4">Você não tem permissão para acessar esta página.</p>
+		<a th:href="@{/}" class="btn btn-primary">Voltar ao início</a>
 	</div>
 </div>
-
+<script th:src="@{/vendor/tabler/js/tabler.min.js}"></script>
+</body>
 </html>

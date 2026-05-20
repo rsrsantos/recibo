@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
+import com.br.rr.models.ModeloRecibo;
 import com.br.rr.models.Plano;
 import com.br.rr.models.Usuario;
 import com.br.rr.models.UsuarioPlano;
@@ -63,6 +66,29 @@ public class AssinaturaGuard {
 		}
 		return java.time.temporal.ChronoUnit.DAYS.between(
 				LocalDate.now(), ativo.get().getDtFim());
+	}
+
+	/**
+	 * Verifica se o usuário pode emitir um recibo do modelo informado.
+	 * Admin sempre pode. Usuário comum precisa de plano ativo válido e o
+	 * plano deve liberar o modelo (conjunto vazio = todos liberados).
+	 */
+	public boolean podeUsarModelo(Usuario usuario, ModeloRecibo modelo) {
+		if (usuario == null || modelo == null) {
+			return false;
+		}
+		if (isAdministrador(usuario)) {
+			return true;
+		}
+		if (bloqueado(usuario)) {
+			return false;
+		}
+		Optional<UsuarioPlano> ativo = usuarioPlanoService.buscarAtivo(usuario);
+		if (ativo.isEmpty()) {
+			return false;
+		}
+		Set<ModeloRecibo> permitidos = ativo.get().getPlano().getModelosPermitidos();
+		return permitidos == null || permitidos.isEmpty() || permitidos.contains(modelo);
 	}
 
 	/**

@@ -8,6 +8,8 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,6 +31,10 @@ public class Recibo {
 
 	@Column(name = "n_recibo", length = 30, updatable = false)
 	private String nRecibo;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, length = 20, updatable = false)
+	private ModeloRecibo modelo = ModeloRecibo.PADRAO;
 
 	@Column(name = "data_geracao", nullable = false, updatable = false)
 	private LocalDate dataGeracao = LocalDate.now();

@@ -1,7 +1,13 @@
 package com.br.rr.controllers;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +19,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.br.rr.dto.ReciboForm;
 import com.br.rr.exception.NegocioException;
+import com.br.rr.models.ModeloRecibo;
 import com.br.rr.models.Recibo;
+import com.br.rr.service.AssinaturaGuard;
+import com.br.rr.service.ContaService;
 import com.br.rr.service.PessoaService;
 import com.br.rr.service.ReciboService;
 
@@ -22,10 +31,15 @@ public class ReciboController {
 
 	private final ReciboService service;
 	private final PessoaService pessoaService;
+	private final ContaService contaService;
+	private final AssinaturaGuard assinaturaGuard;
 
-	public ReciboController(ReciboService service, PessoaService pessoaService) {
+	public ReciboController(ReciboService service, PessoaService pessoaService,
+			ContaService contaService, AssinaturaGuard assinaturaGuard) {
 		this.service = service;
 		this.pessoaService = pessoaService;
+		this.contaService = contaService;
+		this.assinaturaGuard = assinaturaGuard;
 	}
 
 	@GetMapping("/recibos")
@@ -36,8 +50,34 @@ public class ReciboController {
 	}
 
 	@GetMapping("/recibos/novo")
-	public String form(Model model) {
-		model.addAttribute("reciboForm", new ReciboForm());
+	public String escolherModelo(Model model) {
+		var usuario = contaService.usuarioLogado();
+		Map<ModeloRecibo, Boolean> liberados = new EnumMap<>(ModeloRecibo.class);
+		for (ModeloRecibo m : ModeloRecibo.values()) {
+			liberados.put(m, assinaturaGuard.podeUsarModelo(usuario, m));
+		}
+		model.addAttribute("modelos", ModeloRecibo.values());
+		model.addAttribute("liberados", liberados);
+		return "recibo/modelos";
+	}
+
+	@GetMapping("/recibos/novo/{modelo}")
+	public String form(@PathVariable ModeloRecibo modelo, Model model,
+			RedirectAttributes attributes) {
+		if (!modelo.isImplementado()) {
+			attributes.addFlashAttribute("mensagem_erro",
+					"O modelo \"" + modelo.getDescricao() + "\" ainda não está disponível.");
+			return "redirect:/recibos/novo";
+		}
+		if (!assinaturaGuard.podeUsarModelo(contaService.usuarioLogado(), modelo)) {
+			attributes.addFlashAttribute("mensagem_erro",
+					"Seu plano não inclui o modelo \"" + modelo.getDescricao() + "\".");
+			return "redirect:/recibos/novo";
+		}
+		ReciboForm form = new ReciboForm();
+		form.setModelo(modelo);
+		model.addAttribute("reciboForm", form);
+		model.addAttribute("modelo", modelo);
 		model.addAttribute("proximoNumero", service.proximoNumero());
 		return "recibo/form";
 	}
@@ -60,6 +100,17 @@ public class ReciboController {
 		service.excluir(id);
 		attributes.addFlashAttribute("success", "Recibo excluído.");
 		return "redirect:/recibos";
+	}
+
+	@GetMapping("/recibos/{id}/pdf")
+	public ResponseEntity<byte[]> pdf(@PathVariable Long id,
+			@RequestParam(defaultValue = "1") int vias) {
+		byte[] bytes = service.gerarPdf(id, vias);
+		return ResponseEntity.ok()
+				.contentType(MediaType.APPLICATION_PDF)
+				.header(HttpHeaders.CONTENT_DISPOSITION,
+						"inline; filename=\"recibo-" + id + ".pdf\"")
+				.body(bytes);
 	}
 
 }

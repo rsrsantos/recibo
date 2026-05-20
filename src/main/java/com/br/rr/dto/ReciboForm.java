@@ -5,6 +5,8 @@ import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.br.rr.models.ModeloRecibo;
+
 import jakarta.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -16,6 +18,8 @@ public class ReciboForm {
 
 	@NotNull(message = "Selecione o cliente")
 	private Long destinatarioId;
+
+	private ModeloRecibo modelo = ModeloRecibo.PADRAO;
 
 	private String nRecibo;
 

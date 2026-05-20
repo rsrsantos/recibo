@@ -1,5 +1,6 @@
 package com.br.rr.service.impl;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -62,6 +63,7 @@ public class PlanoServiceImpl implements PlanoService {
 		f.setAtivo(p.isAtivo());
 		f.setTemCarencia(p.isTemCarencia());
 		f.setCarenciaDias(p.getCarenciaDias());
+		f.setModelosPermitidos(new HashSet<>(p.getModelosPermitidos()));
 		return f;
 	}
 
@@ -78,6 +80,10 @@ public class PlanoServiceImpl implements PlanoService {
 		p.setTemCarencia(form.isTemCarencia());
 		p.setCarenciaDias(form.isTemCarencia() && form.getCarenciaDias() != null
 				? form.getCarenciaDias() : 0);
+		p.getModelosPermitidos().clear();
+		if (form.getModelosPermitidos() != null) {
+			p.getModelosPermitidos().addAll(form.getModelosPermitidos());
+		}
 		return repository.save(p);
 	}
 

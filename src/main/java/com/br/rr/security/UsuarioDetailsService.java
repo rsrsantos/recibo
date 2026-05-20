@@ -32,7 +32,7 @@ public class UsuarioDetailsService implements UserDetailsService {
 
 		return User.withUsername(usuario.getEmail())
 				.password(senha)
-				.disabled(!usuario.isAtivo())
+				.disabled(!usuario.isAtivo() || !usuario.isEmailConfirmado())
 				.authorities(usuario.getPerfis().stream()
 						.map(p -> new SimpleGrantedAuthority("ROLE_" + p.getNome()))
 						.collect(Collectors.toList()))

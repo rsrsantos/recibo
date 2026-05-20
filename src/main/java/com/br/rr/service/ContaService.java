@@ -11,6 +11,12 @@ public interface ContaService {
 	/** Cria um novo usuário a partir do formulário de cadastro público. */
 	Usuario cadastrar(CadastroForm form);
 
+	/** Confirma o e-mail usando o token enviado. Retorna o usuário ativado. */
+	Usuario confirmarEmail(String token);
+
+	/** Reenvia o e-mail de confirmação para um endereço ainda não confirmado. */
+	void reenviarConfirmacao(String email);
+
 	/**
 	 * Altera a senha do usuário logado, validando a senha atual e a
 	 * confirmação da nova senha.

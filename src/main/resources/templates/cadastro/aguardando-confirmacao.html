@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title>Verifique seu e-mail — Santo Recibo</title>
+	<link rel="stylesheet" th:href="@{/vendor/tabler/css/tabler.min.css}">
+	<style>
+		body { background: #f4f6fb; }
+		.confirm-page { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem 1rem; }
+		.confirm-card { background:#fff; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.08); width:100%; max-width:480px; overflow:hidden; }
+		.confirm-header { background:linear-gradient(135deg,#206bc4 0%,#1a56a8 100%); padding:2.5rem 2rem 2.75rem; text-align:center; }
+		.confirm-header .brand { display:flex; align-items:center; justify-content:center; gap:.5rem; color:rgba(255,255,255,.8); font-size:.8rem; font-weight:600; margin-bottom:1.75rem; letter-spacing:.5px; text-transform:uppercase; }
+		.mail-bubble { width:72px; height:72px; background:rgba(255,255,255,.15); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto; border:2px solid rgba(255,255,255,.25); }
+		.confirm-body { padding:2rem 2rem 1.25rem; }
+		.email-pill { display:inline-flex; align-items:center; gap:.45rem; background:#f0f5ff; color:#206bc4; border:1px solid #d0e1f9; border-radius:999px; padding:.35rem .9rem; font-size:.875rem; font-weight:600; max-width:100%; word-break:break-all; }
+		.step-item { display:flex; align-items:flex-start; gap:.875rem; padding:.625rem 0; }
+		.step-item + .step-item { border-top:1px solid #f1f3f7; }
+		.step-num { flex-shrink:0; width:26px; height:26px; background:#e8f0fe; color:#206bc4; border-radius:50%; font-size:.75rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+		.step-text { font-size:.875rem; color:#495057; line-height:1.5; }
+		.confirm-footer { padding:1.25rem 2rem 1.75rem; border-top:1px solid #f1f3f7; }
+		.btn-reenviar { width:100%; padding:.75rem; border:2px solid #206bc4; border-radius:10px; background:transparent; color:#206bc4; font-weight:600; font-size:.9rem; cursor:pointer; transition:background .15s,color .15s; display:flex; align-items:center; justify-content:center; gap:.5rem; }
+		.btn-reenviar:hover { background:#206bc4; color:#fff; }
+		.btn-reenviar:disabled { opacity:.6; cursor:not-allowed; }
+		.back-link { display:inline-flex; align-items:center; gap:.3rem; margin-top:1.25rem; font-size:.825rem; color:#868e96; text-decoration:none; transition:color .15s; }
+		.back-link:hover { color:#206bc4; }
+	</style>
+</head>
+<body>
+<div class="confirm-page">
+	<div class="confirm-card">
+
+		<!-- Header -->
+		<div class="confirm-header">
+			<div class="brand">
+				<img th:src="@{/images/santo-recibo-icon.svg}" width="18" height="18" alt="">
+				Santo Recibo
+			</div>
+			<div class="mail-bubble">
+				<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24"
+					fill="none" stroke="#fff" stroke-width="1.75">
+					<rect x="2" y="4" width="20" height="16" rx="2"/>
+					<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+				</svg>
+			</div>
+		</div>
+
+		<!-- Body -->
+		<div class="confirm-body">
+			<h2 class="fw-bold text-center mb-1" style="font-size:1.3rem">Confirme seu e-mail</h2>
+			<p class="text-center text-muted mb-3" style="font-size:.875rem">
+				Enviamos um link de ativação para
+			</p>
+
+			<div class="text-center mb-4">
+				<span class="email-pill" th:if="${email}">
+					<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+						fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0">
+						<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+						<polyline points="22,6 12,13 2,6"/>
+					</svg>
+					<span th:text="${email}"></span>
+				</span>
+				<span class="text-muted small" th:unless="${email}">o endereço cadastrado</span>
+			</div>
+
+			<!-- Alertas -->
+			<div class="alert alert-success d-flex align-items-center gap-2 mb-3" th:if="${mensagem}">
+				<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+				<span th:text="${mensagem}"></span>
+			</div>
+			<div class="alert alert-danger mb-3" th:if="${erro}" th:text="${erro}"></div>
+
+			<!-- Passos -->
+			<div>
+				<div class="step-item">
+					<span class="step-num">1</span>
+					<span class="step-text">Abra o e-mail enviado para <strong th:text="${email ?: 'sua conta'}"></strong></span>
+				</div>
+				<div class="step-item">
+					<span class="step-num">2</span>
+					<span class="step-text">Clique em <strong>Confirmar e-mail</strong> — o link expira em <strong>24 horas</strong></span>
+				</div>
+				<div class="step-item">
+					<span class="step-num">3</span>
+					<span class="step-text">Pronto! Você já poderá fazer login normalmente</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<div class="confirm-footer">
+			<p class="text-center text-muted mb-3" style="font-size:.8rem">
+				Não encontrou? Verifique a pasta de <strong>spam</strong> ou solicite reenvio.
+			</p>
+			<form method="post" th:action="@{/reenviar-confirmacao}" id="formReenviar">
+				<!-- Se o email veio na URL, usa campo oculto; senão exibe input visível -->
+				<input th:if="${email}" type="hidden" name="email" th:value="${email}">
+				<div th:unless="${email}" class="mb-3">
+					<input type="email" name="email" class="form-control" required
+						placeholder="Digite o e-mail cadastrado" autocomplete="email">
+				</div>
+				<button type="submit" class="btn-reenviar" id="btnReenviar">
+					<span id="txtNormal" class="d-flex align-items-center gap-2">
+						<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+						Reenviar e-mail de confirmação
+					</span>
+					<span id="txtLoading" class="d-none d-flex align-items-center gap-2">
+						<span class="spinner-border spinner-border-sm" role="status"></span>
+						Reenviando...
+					</span>
+				</button>
+			</form>
+
+			<!-- Voltar ao login — dentro do card, bem posicionado -->
+			<div class="text-center mt-3">
+				<a th:href="@{/login}" class="back-link">
+					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+					Voltar ao login
+				</a>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<!-- WhatsApp flutuante -->
+<th:block th:replace="~{fragments/whatsapp :: btn(${whatsapp})}"></th:block>
+
+<script th:src="@{/vendor/tabler/js/tabler.min.js}"></script>
+<script>
+	document.getElementById('formReenviar').addEventListener('submit', function () {
+		document.getElementById('btnReenviar').disabled = true;
+		document.getElementById('txtNormal').classList.add('d-none');
+		document.getElementById('txtLoading').classList.remove('d-none');
+	});
+</script>
+</body>
+</html>

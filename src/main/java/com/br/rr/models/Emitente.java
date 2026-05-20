@@ -59,6 +59,14 @@ public class Emitente {
 	@Column(length = 2)
 	private String estado;
 
+	/** Imagem da logo armazenada diretamente no banco (PNG ou JPEG, máx. 500 KB). */
+	@Column(columnDefinition = "bytea")
+	private byte[] logo;
+
+	/** MIME type da logo: "image/png" ou "image/jpeg". */
+	@Column(name = "logo_tipo", length = 20)
+	private String logoTipo;
+
 	@OneToOne
 	@JoinColumn(name = "usuario_id", nullable = false, unique = true)
 	private Usuario usuario;
